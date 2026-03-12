@@ -1,4 +1,4 @@
-import { AppointmentStatus } from "../../../generated/prisma"
+import { AppointmentStatus } from "@prisma/client"
 import { prisma } from "../../lib/prisma"
 
 export interface AppointmentData {

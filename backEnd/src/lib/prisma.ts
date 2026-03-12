@@ -2,7 +2,7 @@ import dotenv from "dotenv"
 import path from "path"
 import { fileURLToPath } from "url"
 import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient } from '../../generated/prisma'
+import { PrismaClient } from '@prisma/client'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

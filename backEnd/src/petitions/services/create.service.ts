@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma"
-import { PetitionStatus, PetitionType } from "../../../generated/prisma"
+import { PetitionStatus, PetitionType } from "@prisma/client"
 
 interface DataPetition {
   title: string
