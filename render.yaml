@@ -7,8 +7,8 @@ services:
     # Prisma client is already committed in backEnd/generated/prisma.
     # Running prisma generate here can fail if DATABASE_URL isn't set yet.
     buildCommand: npm ci --include=dev
-    startCommand: npx prisma migrate deploy && npm run start
-    healthCheckPath: /api-docs
+    startCommand: npm run start
+    healthCheckPath: /health
 
     envVars:
       - key: NODE_VERSION

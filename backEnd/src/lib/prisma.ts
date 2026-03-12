@@ -8,19 +8,39 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 dotenv.config({ path: path.resolve(__dirname, "..", "..", ".env") })
 
-let connectionString = `${process.env.DATABASE_URL || ""}`.trim()
+let prismaInstance: PrismaClient | null = null
 
-if (!connectionString) {
-  throw new Error("DATABASE_URL nao configurada no backEnd/.env")
+function getConnectionString(): string {
+  let connectionString = `${process.env.DATABASE_URL || ""}`.trim()
+
+  // Compatibilidade com configs antigas que usavam host 'base'.
+  if (connectionString.includes("@base:")) {
+    connectionString = connectionString.replace("@base:", "@localhost:")
+    console.warn("[prisma] Host 'base' detectado na DATABASE_URL. Usando 'localhost'.")
+  }
+
+  return connectionString
 }
 
-// Compatibilidade com configs antigas que usavam host 'base'.
-if (connectionString.includes("@base:")) {
-  connectionString = connectionString.replace("@base:", "@localhost:")
-  console.warn("[prisma] Host 'base' detectado na DATABASE_URL. Usando 'localhost'.")
+function getPrisma(): PrismaClient {
+  if (prismaInstance) return prismaInstance
+
+  const connectionString = getConnectionString()
+  if (!connectionString) {
+    throw new Error(
+      "DATABASE_URL nao configurada. Configure a env var DATABASE_URL (ex: no Render -> Environment)."
+    )
+  }
+
+  const adapter = new PrismaPg({ connectionString })
+  prismaInstance = new PrismaClient({ adapter })
+  return prismaInstance
 }
 
-const adapter = new PrismaPg({ connectionString })
-const prisma = new PrismaClient({ adapter })
-
-export { prisma }
+// Lazy proxy: permite o servidor subir mesmo sem DATABASE_URL; falha apenas quando usar o Prisma.
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_target, prop) {
+    const real = getPrisma() as any
+    return real[prop]
+  },
+}) as PrismaClient

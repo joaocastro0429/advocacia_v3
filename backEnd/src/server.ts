@@ -71,6 +71,10 @@ server.use(
 
 server.use(express.json())
 
+server.get('/health', (req: Request, res: Response) => {
+  return res.status(200).json({ ok: true })
+})
+
 server.use('/uploads', express.static(path.resolve(__dirname, '..', 'uploads')))
 
 server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
