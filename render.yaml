@@ -49,7 +49,6 @@ services:
   - type: web
     name: advocacia-frontend
     runtime: static
-    plan: free
     rootDir: frontEnd
     buildCommand: npm ci --include=dev && npm run build
     staticPublishPath: dist
