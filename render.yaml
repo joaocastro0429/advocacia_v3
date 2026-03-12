@@ -4,7 +4,9 @@ services:
     runtime: node
     plan: free
     rootDir: backEnd
-    buildCommand: npm ci --include=dev && npx prisma generate
+    # Prisma client is already committed in backEnd/generated/prisma.
+    # Running prisma generate here can fail if DATABASE_URL isn't set yet.
+    buildCommand: npm ci --include=dev
     startCommand: npx prisma migrate deploy && npm run start
     healthCheckPath: /api-docs
 
