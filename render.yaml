@@ -1,0 +1,66 @@
+databases:
+  - name: advocacia-db
+    databaseName: advocacia
+    user: advocacia
+    plan: free
+
+services:
+  - type: web
+    name: advocacia-backend
+    runtime: node
+    plan: free
+    rootDir: backEnd
+    buildCommand: npm ci --include=dev && npx prisma generate
+    preDeployCommand: npx prisma migrate deploy
+    startCommand: npm run start
+    healthCheckPath: /api-docs
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: DATABASE_URL
+        fromDatabase:
+          name: advocacia-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_RESET_SECRET
+        generateValue: true
+      # Ajuste estes 2 valores depois que o frontend for criado (URL final do site).
+      - key: CORS_ORIGINS
+        value: https://advocacia-frontend.onrender.com
+      - key: FRONTEND_URL
+        value: https://advocacia-frontend.onrender.com
+      # E-mail (opcional). Para usar SMTP/Resend, configure os secrets no Render.
+      - key: MAIL_PROVIDER
+        value: smtp
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+
+  - type: web
+    name: advocacia-frontend
+    runtime: static
+    plan: free
+    rootDir: frontEnd
+    buildCommand: npm ci --include=dev && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      # Se você mantiver o nome do serviço como "advocacia-backend", esta URL tende a ser válida.
+      # Se mudar o nome/domínio, ajuste aqui e em CORS_ORIGINS/FRONTEND_URL do backend.
+      - key: VITE_API_URL
+        value: https://advocacia-backend.onrender.com/api
