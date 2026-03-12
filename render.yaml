@@ -25,12 +25,10 @@ services:
         generateValue: true
       - key: JWT_RESET_SECRET
         generateValue: true
-
       - key: CORS_ORIGINS
         value: https://advocacia-frontend.onrender.com
       - key: FRONTEND_URL
         value: https://advocacia-frontend.onrender.com
-
       - key: MAIL_PROVIDER
         value: smtp
       - key: SMTP_HOST
