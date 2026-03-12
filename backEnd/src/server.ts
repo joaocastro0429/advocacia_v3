@@ -20,19 +20,51 @@ const __dirname = path.dirname(__filename)
 
 const server = express()
 
-server.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'http://localhost:8080',
-    'http://localhost:8081',
-    /^http:\/\/172\.24\.0\.\d+:8080$/,
-    /^http:\/\/192\.168\.\d+\.\d+:8080$/,
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}))
+const defaultAllowedOrigins: Array<string | RegExp> = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:8080',
+  'http://localhost:8081',
+  /^http:\/\/172\.24\.0\.\d+:8080$/,
+  /^http:\/\/192\.168\.\d+\.\d+:8080$/,
+]
+
+function parseCorsOriginsFromEnv(): string[] {
+  const raw = (process.env.CORS_ORIGINS || process.env.CORS_ORIGIN || '').trim()
+  if (!raw) return []
+  return raw
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+}
+
+const envAllowedOrigins = parseCorsOriginsFromEnv()
+const allowAllOrigins = envAllowedOrigins.includes('*')
+
+server.use(
+  cors({
+    origin: (origin, callback) => {
+      // Requests sem Origin (ex: curl, health checks) devem passar.
+      if (!origin) return callback(null, true)
+
+      if (allowAllOrigins) return callback(null, true)
+
+      const allowed: Array<string | RegExp> = [
+        ...defaultAllowedOrigins,
+        ...envAllowedOrigins.filter((o) => o !== '*'),
+      ]
+
+      const ok = allowed.some((rule) =>
+        typeof rule === 'string' ? rule === origin : rule.test(origin)
+      )
+
+      return ok ? callback(null, true) : callback(new Error('Not allowed by CORS'))
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+)
 
 server.use(express.json())
 
