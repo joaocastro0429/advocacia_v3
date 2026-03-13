@@ -19,9 +19,9 @@ services:
         generateValue: true
       # Ajuste para a URL final do seu frontend no Render (ou use '*' temporariamente).
       - key: CORS_ORIGINS
-        sync: false
+        value: https://advocacia-frontend-f86x.onrender.com
       - key: FRONTEND_URL
-        sync: false
+        value: https://advocacia-frontend-f86x.onrender.com
       # E-mail (opcional)
       - key: MAIL_PROVIDER
         value: smtp
