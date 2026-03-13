@@ -1,8 +1,3 @@
-databases:
-  - name: advocacia-postgres
-    databaseName: advocacia
-    plan: free
-
 services:
   - type: web
     name: advocacia-backend
@@ -10,15 +5,14 @@ services:
     plan: free
     rootDir: backEnd
     buildCommand: npm ci --include=dev && npx prisma generate
-    startCommand: sh -c 'if [ -z "$DATABASE_URL" ]; then echo "DATABASE_URL is required. Configure it or attach a Render Postgres database."; exit 1; fi; if [ "$RESET_DB" = "true" ]; then npx prisma migrate reset --force; fi; npx prisma migrate deploy && npm run start'
+    # If DATABASE_URL isn't set yet, skip migrations so the service can boot and bind PORT.
+    startCommand: sh -c 'if [ -z "$DATABASE_URL" ]; then echo "DATABASE_URL not set. Skipping migrations."; else if [ "$RESET_DB" = "true" ]; then npx prisma migrate reset --force; fi; npx prisma migrate deploy; fi; npm run start'
     healthCheckPath: /health
     envVars:
       - key: NODE_VERSION
         value: 22
       - key: DATABASE_URL
-        fromDatabase:
-          name: advocacia-postgres
-          property: connectionString
+        sync: false
       - key: RESET_DB
         value: "false"
       - key: JWT_SECRET
