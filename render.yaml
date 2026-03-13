@@ -9,8 +9,8 @@ services:
     runtime: node
     plan: free
     rootDir: backEnd
-    buildCommand: npm ci --include=dev
-    startCommand: "sh -c 'npx prisma generate && if [ \"$RESET_DB\" = \"true\" ]; then npx prisma migrate reset --force; fi; npx prisma migrate deploy && npm run start'"
+    buildCommand: npm ci --include=dev && npx prisma generate
+    startCommand: sh -c 'if [ "$RESET_DB" = "true" ]; then npx prisma migrate reset --force; fi; npx prisma migrate deploy && npm run start'
     healthCheckPath: /health
     envVars:
       - key: NODE_VERSION
@@ -19,16 +19,16 @@ services:
         fromDatabase:
           name: advocacia-postgres
           property: connectionString
+      - key: RESET_DB
+        value: "false"
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_RESET_SECRET
         generateValue: true
       - key: CORS_ORIGINS
-        value: https://advocacia-frontend-f86x.onrender.com
+        sync: false
       - key: FRONTEND_URL
-        value: https://advocacia-frontend-f86x.onrender.com
-      - key: RESET_DB
-        value: false
+        sync: false
       - key: MAIL_PROVIDER
         value: smtp
       - key: SMTP_HOST
@@ -44,8 +44,9 @@ services:
       - key: RESEND_API_KEY
         sync: false
 
-  - type: static
+  - type: web
     name: advocacia-frontend
+    runtime: static
     rootDir: frontEnd
     buildCommand: npm ci --include=dev && npm run build
     staticPublishPath: dist
@@ -54,5 +55,7 @@ services:
         source: /*
         destination: /index.html
     envVars:
+      - key: NODE_VERSION
+        value: 22
       - key: VITE_API_URL
-        value: https://advocacia-backend-wpd1.onrender.com/api
+        sync: false
