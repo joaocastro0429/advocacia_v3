@@ -9,8 +9,8 @@ services:
     runtime: node
     plan: free
     rootDir: backEnd
-    buildCommand: npm ci --include=dev && npx prisma generate
-    startCommand: "sh -c 'if [ \"$RESET_DB\" = \"true\" ]; then npx prisma migrate reset --force; fi; npx prisma migrate deploy && npm run start'"
+    buildCommand: npm ci --include=dev
+    startCommand: "sh -c 'npx prisma generate && if [ \"$RESET_DB\" = \"true\" ]; then npx prisma migrate reset --force; fi; npx prisma migrate deploy && npm run start'"
     healthCheckPath: /health
     envVars:
       - key: NODE_VERSION
