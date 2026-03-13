@@ -25,6 +25,8 @@ const defaultAllowedOrigins: Array<string | RegExp> = [
   'http://localhost:3000',
   'http://localhost:8080',
   'http://localhost:8081',
+  // Allow Render-hosted frontends (static sites often have auto-suffixed subdomains).
+  /^https:\/\/[a-z0-9-]+\.onrender\.com$/,
   // Render static sites often get an auto-suffixed subdomain like:
   // https://advocacia-frontend-f86x.onrender.com
   /^https:\/\/advocacia-frontend(-[a-z0-9]+)?\.onrender\.com$/,
