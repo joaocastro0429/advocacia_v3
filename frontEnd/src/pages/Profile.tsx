@@ -262,15 +262,30 @@ export default function Profile() {
                 <div className="space-y-4 py-4">
                   <div className="space-y-2">
                     <Label>Senha Atual</Label>
-                    <Input type="password" value={passwords.current} onChange={e => setPasswords({...passwords, current: e.target.value})} />
+                    <Input
+                      type="password"
+                      autoComplete="current-password"
+                      value={passwords.current}
+                      onChange={e => setPasswords({...passwords, current: e.target.value})}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Nova Senha</Label>
-                    <Input type="password" value={passwords.new} onChange={e => setPasswords({...passwords, new: e.target.value})} />
+                    <Input
+                      type="password"
+                      autoComplete="new-password"
+                      value={passwords.new}
+                      onChange={e => setPasswords({...passwords, new: e.target.value})}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label>Confirmar Nova Senha</Label>
-                    <Input type="password" value={passwords.confirm} onChange={e => setPasswords({...passwords, confirm: e.target.value})} />
+                    <Input
+                      type="password"
+                      autoComplete="new-password"
+                      value={passwords.confirm}
+                      onChange={e => setPasswords({...passwords, confirm: e.target.value})}
+                    />
                   </div>
                   <button onClick={handleForgotPassword} className="text-xs text-[#d99117] hover:underline font-bold">Esqueci minha senha</button>
                 </div>

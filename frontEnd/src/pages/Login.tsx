@@ -224,6 +224,7 @@ export default function Login() {
                     <Input
                       id="new-password"
                       type="password"
+                      autoComplete="new-password"
                       placeholder="••••••••"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
@@ -236,6 +237,7 @@ export default function Login() {
                     <Input
                       id="confirm-new-password"
                       type="password"
+                      autoComplete="new-password"
                       placeholder="••••••••"
                       value={confirmNewPassword}
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
@@ -266,6 +268,7 @@ export default function Login() {
                   <Input
                     id="password"
                     type="password"
+                    autoComplete={isLogin ? "current-password" : "new-password"}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
