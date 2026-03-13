@@ -63,6 +63,11 @@ server.use(
         typeof rule === 'string' ? rule === origin : rule.test(origin)
       )
 
+      if (!ok) {
+        console.warn('[cors] blocked origin:', origin)
+        console.warn('[cors] env CORS_ORIGINS/CORS_ORIGIN:', (process.env.CORS_ORIGINS || process.env.CORS_ORIGIN || '').trim())
+      }
+
       return ok ? callback(null, true) : callback(new Error('Not allowed by CORS'))
     },
     credentials: true,
