@@ -1,10 +1,11 @@
+import { PetitionStatus, PetitionType } from "@prisma/client"
 import { prisma } from "../../lib/prisma"
 
 interface UpdatePetitionData {
   title?: string
   description?: string
-  type?: string
-  status?: string
+  type?: PetitionType
+  status?: PetitionStatus
   addressing?: string
   defendant?: string
   facts?: string

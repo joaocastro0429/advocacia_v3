@@ -1,4 +1,4 @@
-import {prisma} from '../../lib/prisma'
+import { prisma } from '../../lib/prisma'
 
 interface IDataService{
   name: string
@@ -9,22 +9,41 @@ interface IDataService{
   
 }
 
-export const createService= async(data:IDataService)=>{
+export const createService = async (data: IDataService) => {
     try{
-        const lawyer = await prisma.lawyer.create({
-            data:{
+        const lawyer = await prisma.user.create({
+            data: {
                 name: data.name,
                 email: data.email,
-                oabNumber: data.oabNumber,
+                oab: data.oabNumber,
                 specialty: data.specialty,
                 phone: data.phone,
+                role: "lawyer",
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                oab: true,
+                specialty: true,
+                phone: true,
+                createdAt: true,
+                updatedAt: true,
             }
         })
-        return lawyer
+        return {
+            id: lawyer.id,
+            name: lawyer.name,
+            email: lawyer.email,
+            oabNumber: lawyer.oab,
+            specialty: lawyer.specialty,
+            phone: lawyer.phone,
+            createdAt: lawyer.createdAt,
+            updatedAt: lawyer.updatedAt,
+        }
 
     }catch(error){
         console.log(error)
     }
 }
-
 

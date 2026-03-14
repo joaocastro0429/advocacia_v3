@@ -1,21 +1,40 @@
 import { Response } from "express"
+import { PetitionStatus, PetitionType } from "@prisma/client"
 import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware"
 import { UpdatePetition } from "../services/update.service"
+
+const coercePetitionType = (value: unknown): PetitionType | undefined => {
+  if (typeof value !== "string") return undefined
+  return (Object.values(PetitionType) as string[]).includes(value)
+    ? (value as PetitionType)
+    : undefined
+}
+
+const coercePetitionStatus = (value: unknown): PetitionStatus | undefined => {
+  if (typeof value !== "string") return undefined
+  return (Object.values(PetitionStatus) as string[]).includes(value)
+    ? (value as PetitionStatus)
+    : undefined
+}
 
 export async function updatePetitionController(req: AuthenticatedRequest, res: Response) {
   try {
     const userId = req.user?.id
-    const { id } = req.params
+    const rawId = (req.params as any)?.id
+    const id = Array.isArray(rawId) ? rawId[0] : rawId
 
     if (!userId) {
       return res.status(401).json({ error: "Usuario nao autenticado" })
+    }
+    if (!id) {
+      return res.status(400).json({ error: "ID da peticao e obrigatorio" })
     }
 
     const mappedData = {
       title: req.body.title,
       description: req.body.description,
-      type: req.body.type,
-      status: req.body.status,
+      type: coercePetitionType(req.body.type),
+      status: coercePetitionStatus(req.body.status),
       addressing: req.body.addressing ?? req.body.enderecamento ?? undefined,
       defendant: req.body.defendant ?? req.body.reu ?? undefined,
       facts: req.body.facts ?? req.body.fatos ?? undefined,
