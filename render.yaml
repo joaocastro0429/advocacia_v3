@@ -2,9 +2,9 @@ services:
   - type: web
     name: backend-api
     runtime: node
-    rootDir: backend
+    rootDir: backEnd
     buildCommand: npm install && npx prisma generate && npm run build
-    startCommand: npx prisma migrate deploy && node dist/index.js
+    startCommand: npx prisma migrate deploy && npm start
 
     envVars:
       - key: NODE_ENV
@@ -21,7 +21,7 @@ services:
   - type: web
     name: frontend
     runtime: static
-    rootDir: frontend
+    rootDir: frontEnd
     buildCommand: npm install && npm run build
     staticPublishPath: dist
 
