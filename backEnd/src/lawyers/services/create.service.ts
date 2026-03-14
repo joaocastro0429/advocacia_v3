@@ -1,4 +1,6 @@
 import { prisma } from '../../lib/prisma'
+import bcrypt from "bcrypt"
+import { validateStrongPassword } from "../../lib/password-policy"
 
 interface IDataService{
   name: string
@@ -6,15 +8,24 @@ interface IDataService{
   oabNumber: string
   specialty:string
   phone:string
+  password: string
   
 }
 
 export const createService = async (data: IDataService) => {
     try{
+        const passwordError = validateStrongPassword(data.password)
+        if (passwordError) {
+            throw new Error(passwordError)
+        }
+
+        const hashedPassword = await bcrypt.hash(data.password, 10)
+
         const lawyer = await prisma.user.create({
             data: {
                 name: data.name,
                 email: data.email,
+                password: hashedPassword,
                 oab: data.oabNumber,
                 specialty: data.specialty,
                 phone: data.phone,
@@ -46,4 +57,3 @@ export const createService = async (data: IDataService) => {
         console.log(error)
     }
 }
-
