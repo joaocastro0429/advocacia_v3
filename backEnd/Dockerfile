@@ -1,32 +1,34 @@
-# c:\Users\Santri\Documents\Estudo Dev\advocacia_v3-main\backEnd\Dockerfile
-
-# Usa uma imagem Node.js recente
+# Usa Node moderno
 FROM node:22
 
-# Define o diretório de trabalho dentro do container
+# Diretório de trabalho
 WORKDIR /app
 
-# Copia os arquivos de dependências
+# Copia dependências primeiro (melhora cache do build)
 COPY package*.json ./
 
-# Instala as dependências
+# Instala dependências
 RUN npm install
 
-# Copia o restante do código
+# Copia restante do projeto
 COPY . .
 
-# Gera o cliente do Prisma para o Linux (sistema do container)
+# Gera cliente Prisma para ambiente Linux
 RUN npx prisma generate
 
-# Copia e torna o script de entrypoint executável
+# Compila o projeto (se for TypeScript)
+RUN npm run build
+
+# Copia script de entrada
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
-# Expõe a porta que a API usa
-EXPOSE 3333
+# Porta usada pelo Render
+EXPOSE 10000
 
-# Define o entrypoint que rodará as migrações
+# Executa script que roda migrations
 ENTRYPOINT ["./entrypoint.sh"]
 
-# Comando para iniciar a aplicação
-CMD ["npm", "run", "start"]
+# Inicia aplicação
+CMD ["node", "dist/index.js"]
+
