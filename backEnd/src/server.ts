@@ -82,9 +82,9 @@ if (!fs.existsSync(uploadsPath)) {
 
 server.use('/uploads', express.static(uploadsPath))
 
-// ================= Health Check =================
+// ================= api Check =================
 
-server.get('/health', (req: Request, res: Response) => {
+server.get('/api', (req: Request, res: Response) => {
   return res.status(200).json({ ok: true })
 })
 
