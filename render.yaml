@@ -5,20 +5,16 @@ services:
     rootDir: backend
     buildCommand: npm install && npx prisma generate && npm run build
     startCommand: npx prisma migrate deploy && node dist/index.js
-    plan: free
 
     envVars:
       - key: NODE_ENV
         value: production
-
       - key: DATABASE_URL
         fromDatabase:
           name: advocacia-db
           property: connectionString
-
       - key: JWT_SECRET
         generateValue: true
-
       - key: PORT
         value: 10000
 
@@ -28,7 +24,6 @@ services:
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
-    plan: free
 
     envVars:
       - key: VITE_API_URL
@@ -36,4 +31,3 @@ services:
 
 databases:
   - name: advocacia-db
-    plan: free
