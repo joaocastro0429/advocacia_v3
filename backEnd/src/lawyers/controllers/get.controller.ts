@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import {GetService} from '../services/get.service'
+import {GetService} from '../services/get.service.js'
 
 
 export const Getcontroller:RequestHandler=async(req,res)=>{

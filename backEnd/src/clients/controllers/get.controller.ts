@@ -1,6 +1,6 @@
 import { Response } from "express"
-import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware"
-import { getClients } from "../../clients/services/get.services"
+import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware.js"
+import { getClients } from "../../clients/services/get.services.js"
 
 export const getClient = async (req: AuthenticatedRequest, res: Response) => {
   try {

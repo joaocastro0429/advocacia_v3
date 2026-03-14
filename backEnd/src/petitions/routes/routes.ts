@@ -1,10 +1,10 @@
-import {createPetitionController} from '../controllers/create.controller'
-import {getPetitionsController} from '../controllers/get.controller' // Updated import
-import {GetPetitionByIdController} from '../controllers/getById.controller' // Updated import
-import {deletePetitionController} from '../controllers/delete.controller' // Updated import
-import {updatePetitionController} from '../controllers/update.controller' // Updated import
+import {createPetitionController} from '../controllers/create.controller.js'
+import {getPetitionsController} from '../controllers/get.controller.js' // Updated import
+import {GetPetitionByIdController} from '../controllers/getById.controller.js' // Updated import
+import {deletePetitionController} from '../controllers/delete.controller.js' // Updated import
+import {updatePetitionController} from '../controllers/update.controller.js' // Updated import
 import {Router} from 'express'
-import { authMiddleware } from '../../login/middlewares/auth.middleware'
+import { authMiddleware } from '../../login/middlewares/auth.middleware.js'
 
 export const petitionRoutes = Router() // Updated route object name
 

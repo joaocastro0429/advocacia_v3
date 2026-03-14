@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import { updateProcess } from '../../process/services/update.service'
+import { updateProcess } from '../../process/services/update.service.js'
 
 export const updateProcessController: RequestHandler = async (req, res) => {
   try {

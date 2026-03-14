@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { deleteService } from "../../process/services/delete.service";
+import { deleteService } from "../../process/services/delete.service.js";
 
 export const deleteController: RequestHandler = async (req, res) => {
   try {

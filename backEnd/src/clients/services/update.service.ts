@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma"
+import { prisma } from "../../lib/prisma.js"
 
 export const updateClient = async (id: string, userId: string, data: any) => {
   try {

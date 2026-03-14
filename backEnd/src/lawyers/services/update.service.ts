@@ -1,4 +1,4 @@
-import { prisma } from '../../lib/prisma'
+import { prisma } from '../../lib/prisma.js'
 
 // Campos permitidos para atualizar (conforme schema Lawyer)
 export const updateLawyer = async (

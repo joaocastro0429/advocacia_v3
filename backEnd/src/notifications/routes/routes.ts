@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import { authMiddleware } from '../../login/middlewares/auth.middleware'
+import { authMiddleware } from '../../login/middlewares/auth.middleware.js'
 
 const notificationsRouter = Router()
 
-// Endpoint temporário para manter compatibilidade com o frontend
+// Endpoint temporrio para manter compatibilidade com o frontend
 notificationsRouter.get('/notifications', authMiddleware, (_req, res) => {
   return res.status(200).json([])
 })

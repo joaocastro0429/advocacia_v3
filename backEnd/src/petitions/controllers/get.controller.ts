@@ -1,7 +1,7 @@
 // src/petitions/controllers/get.controller.ts
 import { Response } from 'express'
-import { AuthenticatedRequest } from '../../login/middlewares/auth.middleware'
-import { getPetitions } from '../services/get.service'
+import { AuthenticatedRequest } from '../../login/middlewares/auth.middleware.js'
+import { getPetitions } from '../services/get.service.js'
 
 export async function getPetitionsController(req: AuthenticatedRequest, res: Response) {
   try {

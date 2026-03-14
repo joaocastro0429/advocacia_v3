@@ -1,6 +1,6 @@
 import { Response } from "express"
-import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware"
-import { appointment } from "../services/get.service"
+import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware.js"
+import { appointment } from "../services/get.service.js"
 
 export const GetAppointment = async (req: AuthenticatedRequest, res: Response) => {
   try {

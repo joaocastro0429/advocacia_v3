@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
-import { getUserByIdService } from '../services/getById.service';
-import { authMiddleware } from '../../login/middlewares/auth.middleware';
+import { getUserByIdService } from '../services/getById.service.js';
+import { authMiddleware } from '../../login/middlewares/auth.middleware.js';
 
 /**
  * @swagger

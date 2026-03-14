@@ -1,6 +1,6 @@
 import { Response } from "express"
-import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware"
-import { CreateService } from "../services/create.service"
+import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware.js"
+import { CreateService } from "../services/create.service.js"
 
 export const createAppointment = async (req: AuthenticatedRequest, res: Response) => {
   try {

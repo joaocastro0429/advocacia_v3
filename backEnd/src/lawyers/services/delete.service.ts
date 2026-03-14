@@ -1,4 +1,4 @@
-import { prisma } from '../../lib/prisma';
+import { prisma } from '../../lib/prisma.js';
 
 export const deleteLawyer = async (id: string) => {
   return await prisma.user.delete({

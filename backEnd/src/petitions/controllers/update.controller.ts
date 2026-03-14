@@ -1,7 +1,7 @@
 import { Response } from "express"
 import { PetitionStatus, PetitionType } from "@prisma/client"
-import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware"
-import { UpdatePetition } from "../services/update.service"
+import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware.js"
+import { UpdatePetition } from "../services/update.service.js"
 
 const coercePetitionType = (value: unknown): PetitionType | undefined => {
   if (typeof value !== "string") return undefined

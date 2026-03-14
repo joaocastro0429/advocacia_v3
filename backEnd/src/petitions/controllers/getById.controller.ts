@@ -1,6 +1,6 @@
 import { Response } from "express"
-import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware"
-import { getPetitionById } from "../services/get.service"
+import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware.js"
+import { getPetitionById } from "../services/get.service.js"
 
 export async function GetPetitionByIdController(req: AuthenticatedRequest, res: Response) {
   try {

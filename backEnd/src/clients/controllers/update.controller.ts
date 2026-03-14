@@ -1,6 +1,6 @@
 import { Response } from "express"
-import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware"
-import { updateClient } from "../../clients/services/update.service"
+import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware.js"
+import { updateClient } from "../../clients/services/update.service.js"
 
 export const updateClientController = async (req: AuthenticatedRequest, res: Response) => {
   const id = String(req.params.id)

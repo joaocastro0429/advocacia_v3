@@ -1,5 +1,5 @@
 import { PetitionStatus, PetitionType } from "@prisma/client"
-import { prisma } from "../../lib/prisma"
+import { prisma } from "../../lib/prisma.js"
 
 interface UpdatePetitionData {
   title?: string

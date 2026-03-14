@@ -1,5 +1,5 @@
 import { AppointmentStatus } from "@prisma/client"
-import { prisma } from "../../lib/prisma"
+import { prisma } from "../../lib/prisma.js"
 
 export interface AppointmentData {
   title: string

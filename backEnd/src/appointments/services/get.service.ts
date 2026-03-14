@@ -1,4 +1,4 @@
-import {prisma} from '../../lib/prisma'
+import {prisma} from '../../lib/prisma.js'
 
 // Função auxiliar para formatar data como YYYY-MM-DD
 function formatDate(date: Date): string {

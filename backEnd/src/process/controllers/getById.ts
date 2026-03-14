@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import { GetById } from '../services/getById.service'
+import { GetById } from '../services/getById.service.js'
 
 export const GetProcessById: RequestHandler = async (req, res) => {
   try {

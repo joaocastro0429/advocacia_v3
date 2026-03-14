@@ -1,5 +1,5 @@
 import {RequestHandler} from 'express'
-import { LoginService } from '../services/login.sevice'
+import { LoginService } from '../services/login.sevice.js'
 
 export const loginController:RequestHandler = async (req, res) => {
   try {

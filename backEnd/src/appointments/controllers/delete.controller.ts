@@ -1,6 +1,6 @@
 import { Response } from "express"
-import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware"
-import { deleteAppointment } from "../services/delete.service"
+import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware.js"
+import { deleteAppointment } from "../services/delete.service.js"
 
 export const deleteAppointmentController = async (req: AuthenticatedRequest, res: Response) => {
   const id = String(req.params.id)

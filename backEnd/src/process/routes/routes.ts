@@ -1,13 +1,13 @@
 import {Router} from 'express'
-import {CreateProcessController} from '../controllers/process.controller'
-import {GetprocessController} from '../controllers/get.controller'
-import {GetProcessById} from '../controllers/getById'
-import { updateProcessController} from '../controllers/update.controller'
-import {deleteController} from '../controllers/delete.controller'
-import { upload } from '../../config/multer.config'
-import { UploadController } from '../controllers/upload.controller'
-import { DownloadFileController } from '../controllers/download.controller'
-import { authMiddleware } from '../../login/middlewares/auth.middleware'
+import {CreateProcessController} from '../controllers/process.controller.js'
+import {GetprocessController} from '../controllers/get.controller.js'
+import {GetProcessById} from '../controllers/getById.js'
+import { updateProcessController} from '../controllers/update.controller.js'
+import {deleteController} from '../controllers/delete.controller.js'
+import { upload } from '../../config/multer.config.js'
+import { UploadController } from '../controllers/upload.controller.js'
+import { DownloadFileController } from '../controllers/download.controller.js'
+import { authMiddleware } from '../../login/middlewares/auth.middleware.js'
 
 
 export const ProcessRouter= Router()

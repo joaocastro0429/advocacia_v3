@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { updateUserService } from '../services/update.service';
+import { updateUserService } from '../services/update.service.js';
 
 /**
  * @swagger

@@ -1,6 +1,6 @@
 import { Response } from 'express'
-import { AuthenticatedRequest } from '../../login/middlewares/auth.middleware'
-import { ProcessCreateService } from '../services/create.services'
+import { AuthenticatedRequest } from '../../login/middlewares/auth.middleware.js'
+import { ProcessCreateService } from '../services/create.services.js'
 
 export const CreateProcessController = async (req: AuthenticatedRequest, res: Response) => {
   try {

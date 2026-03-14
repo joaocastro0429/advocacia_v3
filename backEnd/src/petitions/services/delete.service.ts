@@ -1,4 +1,4 @@
-import {prisma} from '../../lib/prisma'
+import {prisma} from '../../lib/prisma.js'
 
 export const DeletePetition = async (id: string) => {
   const petition = await prisma.petition.delete({ // Updated prisma model and variable

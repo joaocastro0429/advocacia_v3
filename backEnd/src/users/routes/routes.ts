@@ -1,9 +1,9 @@
 import { RequestHandler, Router } from 'express';
-import { createUserController } from '../controllers/create.controller';
-import { getUsersController } from '../controllers/get.controller';
-import { getUserByIdController } from '../controllers/getById.controller';
-import { updateUserController } from '../controllers/update.controller';
-import { authMiddleware } from '../../login/middlewares/auth.middleware';
+import { createUserController } from '../controllers/create.controller.js';
+import { getUsersController } from '../controllers/get.controller.js';
+import { getUserByIdController } from '../controllers/getById.controller.js';
+import { updateUserController } from '../controllers/update.controller.js';
+import { authMiddleware } from '../../login/middlewares/auth.middleware.js';
 
 const userRoutes = Router();
 

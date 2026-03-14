@@ -1,10 +1,10 @@
-import {createAppointment} from '../controllers/create.controller'
-import {GetAppointment} from '../controllers/get.controller'
-import {GetByIdAppointment}  from '../controllers/getById.controller'
-import { updateAppointmentController } from '../controllers/update.controller'
-import { deleteAppointmentController } from '../controllers/delete.controller'
+import {createAppointment} from '../controllers/create.controller.js'
+import {GetAppointment} from '../controllers/get.controller.js'
+import {GetByIdAppointment}  from '../controllers/getById.controller.js'
+import { updateAppointmentController } from '../controllers/update.controller.js'
+import { deleteAppointmentController } from '../controllers/delete.controller.js'
 import {Router} from 'express'
-import { authMiddleware } from '../../login/middlewares/auth.middleware'
+import { authMiddleware } from '../../login/middlewares/auth.middleware.js'
 
 export const appointmentRoutes= Router()
 

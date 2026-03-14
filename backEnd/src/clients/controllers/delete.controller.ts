@@ -1,6 +1,6 @@
 import { Response } from "express"
-import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware"
-import { deleteClient } from "../../clients/services/delete.service"
+import { AuthenticatedRequest } from "../../login/middlewares/auth.middleware.js"
+import { deleteClient } from "../../clients/services/delete.service.js"
 
 export const deleteClientController = async (req: AuthenticatedRequest, res: Response) => {
   const id = String(req.params.id)

@@ -1,6 +1,6 @@
 import { Response } from 'express'
-import { CreateClient } from '../services/create.service'
-import { AuthenticatedRequest } from '../../login/middlewares/auth.middleware' // ✅ Vai funcionar!
+import { CreateClient } from '../services/create.service.js'
+import { AuthenticatedRequest } from '../../login/middlewares/auth.middleware.js' // ✅ Vai funcionar!
 
 export async function createController(req: AuthenticatedRequest, res: Response) {
   try {

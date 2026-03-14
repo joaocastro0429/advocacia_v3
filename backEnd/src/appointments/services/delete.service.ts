@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma"
+import { prisma } from "../../lib/prisma.js"
 
 export const deleteAppointment = async (id: string, userId: string) => {
   const existing = await prisma.appointment.findFirst({

@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express'
-import {DeletePetition} from '../services/delete.service' // Updated import
+import {DeletePetition} from '../services/delete.service.js' // Updated import
 
 export const deletePetitionController:RequestHandler= async (req, res) => { // Updated controller name
   const  id  = String (req.params.id)

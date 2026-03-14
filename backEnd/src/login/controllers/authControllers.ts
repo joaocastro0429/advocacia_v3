@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import {prisma} from '../../lib/prisma';
-import { sendResetPasswordEmail } from '../../lib/mailer';
+import {prisma} from '../../lib/prisma.js';
+import { sendResetPasswordEmail } from '../../lib/mailer.js';
 
 let warnedResetSecretFallback = false;
 

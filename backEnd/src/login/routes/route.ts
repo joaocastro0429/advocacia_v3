@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { loginController } from '../../login/controllers/login'
-import { forgotPassword, resetPassword } from '../../login/controllers/authControllers'
-import { RegisterController } from '../../login/controllers/register'
+import { loginController } from '../../login/controllers/login.js'
+import { forgotPassword, resetPassword } from '../../login/controllers/authControllers.js'
+import { RegisterController } from '../../login/controllers/register.js'
 
 const loginRouter = Router()
 
