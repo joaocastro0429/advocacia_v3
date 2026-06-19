@@ -1,34 +1,32 @@
 # Usa Node moderno
 FROM node:22
 
-# Diretório de trabalho
+# Diretório da aplicação
 WORKDIR /app
 
-# Copia dependências primeiro (melhora cache do build)
+# Copia package files primeiro
 COPY package*.json ./
 
 # Instala dependências
 RUN npm install
 
-# Copia restante do projeto
+# Copia o restante do projeto
 COPY . .
 
-# Gera cliente Prisma para ambiente Linux
+# Gera cliente Prisma
 RUN npx prisma generate
 
-# Compila o projeto (se for TypeScript)
+# Compila TypeScript
 RUN npm run build
 
-# Copia script de entrada
-COPY entrypoint.sh .
+# Permissão para o script
 RUN chmod +x entrypoint.sh
 
 # Porta usada pelo Render
 EXPOSE 10000
 
-# Executa script que roda migrations
+# Script de inicialização
 ENTRYPOINT ["./entrypoint.sh"]
 
-# Inicia aplicação
-CMD ["node", "dist/index.js"]
-
+# Inicia a aplicação
+CMD ["node", "dist/server.js"]
