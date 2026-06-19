@@ -1,28 +1,53 @@
 services:
-  - type: web
-    name: advocacia-backend
-    runtime: docker
-    repo: https://github.com/joaocastro0429/advocacia_v3.git
-    plan: free
-    dockerContext: ./backEnd
-    dockerfilePath: ./backEnd/Dockerfile
-    envVars:
-      - key: DATABASE_URL
-        value: postgresql://advocacia:advocacia%40ad@advocacia-db:5432/advocacia
-      - key: JWT_SECRET
-        generateValue: true
+  db:
+    image: postgres:17
+    container_name: advocacia-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: advocacia
+      POSTGRES_PASSWORD: advocacia@ad
+      POSTGRES_DB: advocacia
+    ports:
+      - "5433:5432"
+    volumes:
+      - advocacia_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U advocacia -d advocacia"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  - type: web
-    name: advocacia-frontend
-    runtime: docker
-    repo: https://github.com/SEU_USUARIO/SEU_REPO
-    plan: free
-    dockerContext: ./frontEnd
-    dockerfilePath: ./frontEnd/Dockerfile
-    envVars:
-      - key: VITE_API_URL
-        value: https://advocacia-backend.onrender.com
+  backend:
+    build:
+      context: ./backEnd
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3333:3333"
+    environment:
+      DATABASE_URL: postgresql://advocacia:advocacia%40ad@db:5432/advocacia?schema=public
+      JWT_SECRET: dev-secret-change-in-production
+      JWT_RESET_SECRET: dev-reset-secret-change-in-production
+      PORT: 3333
+      CORS_ORIGIN: http://localhost
+      FRONTEND_URL: http://localhost
 
-databases:
-  - name: advocacia-db
-    plan: free
+  frontend:
+    build:
+      context: ./frontEnd
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
+    container_name: advocacia-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  advocacia_pgdata:

@@ -7,8 +7,8 @@ WORKDIR /app
 # Copia package files primeiro
 COPY package*.json ./
 
-# Instala dependências
-RUN npm install
+# Instala dependências (sem postinstall: schema ainda não foi copiado)
+RUN npm install --ignore-scripts
 
 # Copia o restante do projeto
 COPY . .
