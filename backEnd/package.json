@@ -6,7 +6,7 @@
     "postinstall": "prisma generate",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "prisma migrate deploy && node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:mail": "node scripts/test-smtp.mjs",
     "test:smtp": "npm run test:mail"
@@ -23,6 +23,7 @@
     "multer": "^2.0.2",
     "nodemailer": "^6.10.1",
     "pg": "^8.17.1",
+    "prisma": "^7.3.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   },
@@ -34,7 +35,6 @@
     "@types/nodemailer": "^7.0.11",
     "@types/pg": "^8.16.0",
     "@types/swagger-jsdoc": "^6.0.4",
-    "prisma": "^7.3.0",
     "tsx": "^4.21.0",
     "typescript": "^5.3.3"
   }
