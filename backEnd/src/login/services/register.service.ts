@@ -17,13 +17,15 @@ export const Register = async ({
   oabNumber,
   specialty,
 }: RegisterProps) => {
+  const normalizedEmail = email.trim().toLowerCase()
+
   const passwordError = validateStrongPassword(password)
   if (passwordError) {
     throw new Error(passwordError)
   }
 
   const userExists = await prisma.user.findUnique({
-    where: { email },
+    where: { email: normalizedEmail },
   })
 
   if (userExists) {
@@ -42,7 +44,7 @@ export const Register = async ({
 
   const newUser = await prisma.user.create({
     data: {
-      email,
+      email: normalizedEmail,
       password: hashPassword,
       name,
       role: "lawyer",

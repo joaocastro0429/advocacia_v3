@@ -86,10 +86,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
+      const normalizedEmail = email.trim().toLowerCase();
       const response = await apiClient.post<{ user: User; token: string }>(
         "/login",
-        { email, password }
+        { email: normalizedEmail, password }
       );
+
+      if (!response?.user || !response?.token) {
+        throw new Error("Resposta invalida do servidor ao fazer login.");
+      }
 
       const { user: userData, token: authToken } = response;
 
@@ -110,8 +115,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = async (params: SignUpParams) => {
     try {
-      const response = await apiClient.post<User>("/register", {
-        email: params.email,
+      const normalizedEmail = params.email.trim().toLowerCase();
+      await apiClient.post<User>("/register", {
+        email: normalizedEmail,
         password: params.password,
         name: params.name,
         oabNumber: params.oabNumber,
@@ -120,7 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
 
       // Após registrar, fazer login automaticamente
-      const loginResult = await signIn(params.email, params.password);
+      const loginResult = await signIn(normalizedEmail, params.password);
       return loginResult;
     } catch (error) {
       console.error("❌ Erro no registro:", error);
