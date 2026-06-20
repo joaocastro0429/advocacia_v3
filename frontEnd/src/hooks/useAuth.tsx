@@ -84,16 +84,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user]);
 
+  interface LoginResponse {
+    user: User;
+    token: string;
+  }
+
   const signIn = async (email: string, password: string) => {
     try {
       const normalizedEmail = email.trim().toLowerCase();
-      const response = await apiClient.post<{ user: User; token: string }>(
+      const response = await apiClient.post<LoginResponse>(
         "/login",
         { email: normalizedEmail, password }
       );
 
-      if (!response?.user || !response?.token) {
-        throw new Error("Resposta invalida do servidor ao fazer login.");
+      if (!response || !response.user || !response.token) {
+        throw new Error(
+          "Resposta inválida do servidor ao fazer login. Verifique a URL da API e se o backend está ativo."
+        );
       }
 
       const { user: userData, token: authToken } = response;
