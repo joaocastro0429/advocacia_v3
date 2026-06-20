@@ -17,6 +17,10 @@ services:
         generateValue: true
       - key: PORT
         value: 10000
+      - key: CORS_ORIGIN
+        value: https://advocacia-v3-2.onrender.com
+      - key: FRONTEND_URL
+        value: https://advocacia-v3-2.onrender.com/login
 
   - type: web
     name: frontend
@@ -27,7 +31,7 @@ services:
 
     envVars:
       - key: VITE_API_URL
-        value: https://backend-api.onrender.com
+        value: https://advocacia-v3-2.onrender.com/api
 
 databases:
   - name: advocacia-db
