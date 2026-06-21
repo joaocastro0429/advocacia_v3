@@ -98,8 +98,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       );
 
       if (!response || !response.user || !response.token) {
+        console.error("Resposta inesperada do login:", JSON.stringify(response));
         throw new Error(
-          "Resposta inválida do servidor ao fazer login. Verifique a URL da API e se o backend está ativo."
+          `Resposta inválida do servidor ao fazer login. Resposta: ${JSON.stringify(response).substring(0, 200)}`
         );
       }
 

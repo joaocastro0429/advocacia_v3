@@ -30,7 +30,9 @@ services:
 
     envVars:
       - key: VITE_API_URL
-        value: https://advocacia-v3-2.onrender.com/api
+        value: /api
+      - key: BACKEND_UPSTREAM
+        value: https://advocacia-v3-2.onrender.com
 
 databases:
   - name: advocacia-db
