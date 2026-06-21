@@ -45,7 +45,7 @@ const allowAllOrigins = envAllowedOrigins.includes('*')
 
 server.use(
   cors({
-    origin: (origin, callback) => {
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
       if (!origin) return callback(null, true)
 
       if (allowAllOrigins) return callback(null, true)
