@@ -31,7 +31,7 @@ const defaultAllowedOrigins: Array<string | RegExp> = [
 ]
 
 function parseCorsOriginsFromEnv(): string[] {
-  const raw = (process.env.CORS_ORIGINS || '').trim()
+  const raw = (process.env.CORS_ORIGIN || '').trim()
   if (!raw) return []
 
   return raw

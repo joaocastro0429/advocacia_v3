@@ -18,9 +18,9 @@ services:
       - key: PORT
         value: 10000
       - key: CORS_ORIGIN
-        value: https://advocacia-v3-2.onrender.com
+        value: https://advocacia-frontend-a1ro.onrender.com
       - key: FRONTEND_URL
-        value: https://advocacia-v3-2.onrender.com/login
+        value: https://advocacia-frontend-a1ro.onrender.com/login
 
   - type: web
     name: frontend

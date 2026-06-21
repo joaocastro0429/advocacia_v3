@@ -5,16 +5,8 @@ export function getApiBaseUrl(): string {
     return import.meta.env.VITE_API_URL;
   }
   
-  // Caso contrário, detectar automaticamente baseado no host atual
-  const currentHost = window.location.hostname;
-  
-  // Se estiver em localhost, usar localhost para o backend também
-  if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
-    return 'http://localhost:3333/api';
-  }
-  
-  // Se estiver em um IP (ex: 172.24.0.1), usar o mesmo IP para o backend
-  return `http://${currentHost}:3333/api`;
+  // Usar o proxy do nginx - sempre relativo ao mesmo host
+  return '/api';
 }
 
 export const API_BASE_URL = getApiBaseUrl();
