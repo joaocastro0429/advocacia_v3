@@ -4,7 +4,7 @@ services:
     runtime: node
     rootDir: backEnd
     buildCommand: npm install && npx prisma generate && npm run build
-    startCommand: npm start
+    startCommand: npx prisma db push && node dist/server.js
 
     envVars:
       - key: NODE_ENV
@@ -30,9 +30,7 @@ services:
 
     envVars:
       - key: VITE_API_URL
-        value: /api
-      - key: BACKEND_UPSTREAM
-        value: https://advocacia-v3-2.onrender.com
+        value: https://advocacia-v3-2.onrender.com/api
 
 databases:
   - name: advocacia-db
