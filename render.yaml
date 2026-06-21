@@ -20,7 +20,7 @@ services:
       - key: CORS_ORIGIN
         value: "*"
       - key: FRONTEND_URL
-        value: https://advocacia-frontend-a1ro.onrender.com/login
+        value: https://advocacia-frontend-a1ro.onrender.com
 
   - type: web
     name: frontend
@@ -30,7 +30,7 @@ services:
 
     envVars:
       - key: VITE_API_URL
-        value: https://backend-api.onrender.com/api
+        value: https://advocacia-v3-2.onrender.com/api
 
 databases:
   - name: advocacia-db
