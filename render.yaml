@@ -18,19 +18,19 @@ services:
       - key: PORT
         value: 10000
       - key: CORS_ORIGIN
-         value: "*"
+        value: "*"
       - key: FRONTEND_URL
-         value: https://advocacia-frontend.onrender.com/login
+        value: https://advocacia-frontend-a1ro.onrender.com/login
 
   - type: web
     name: frontend
     rootDir: frontEnd
-      runtime: docker
-      dockerfilePath: ./frontEnd/Dockerfile
+    runtime: docker
+    dockerfilePath: ./frontEnd/Dockerfile
 
     envVars:
       - key: VITE_API_URL
-        value: /api
+        value: https://backend-api.onrender.com/api
 
 databases:
   - name: advocacia-db
