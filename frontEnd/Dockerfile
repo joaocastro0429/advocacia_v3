@@ -21,12 +21,18 @@ RUN npm run build
 # Estágio 2: Servir com Nginx
 FROM nginx:alpine
 
+# Instala envsubst (gettext) para substituir variáveis de ambiente em tempo de
+# execução e copia arquivos necessários
+RUN apk add --no-cache gettext
+
 # Copia os arquivos gerados no build para a pasta do Nginx
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copia nossa configuração personalizada do Nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copia o template e o entrypoint que fará a substituição em tempo de execução
+COPY nginx.conf.template /etc/nginx/templates/nginx.conf.template
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/entrypoint.sh"]
