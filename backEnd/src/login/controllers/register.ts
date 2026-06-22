@@ -19,7 +19,7 @@ export const RegisterController: RequestHandler = async (req, res) => {
 
     return res.status(201).json(result)
   } catch (error: any) {
-    const message = error.message || "An error occurred during registration."
+    const message = error?.message || "An error occurred during registration."
     const normalizedMessage = String(message).toLowerCase()
 
     if (
@@ -34,6 +34,13 @@ export const RegisterController: RequestHandler = async (req, res) => {
 
     if (message.includes("already exists") || message.includes("already registered")) {
       return res.status(409).json({ message })
+    }
+
+    if (error?.code === 'ECONNREFUSED' || error?.code === 'P1001') {
+      return res.status(503).json({
+        message:
+          'Erro ao conectar ao banco de dados. Verifique se o PostgreSQL está rodando e se DATABASE_URL está correta.',
+      })
     }
 
     return res.status(500).json({ message })
