@@ -1,11 +1,11 @@
 #!/bin/sh
-# O 'set -e' garante que o script pare se algum comando falhar.
 set -e
 
-echo "Applying database migrations..."
-npx prisma migrate deploy
-echo "Migrations applied successfully."
+echo "DATABASE_URL configurada?"
+echo ${DATABASE_URL:+SIM}
 
-echo "Starting the application..."
-# O comando 'exec "$@"' executa o comando principal do contêiner (o CMD do Dockerfile).
+echo "Aplicando schema..."
+npx prisma db push
+
+echo "Iniciando aplicação..."
 exec "$@"
