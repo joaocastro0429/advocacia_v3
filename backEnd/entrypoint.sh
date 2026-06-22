@@ -1,11 +1,10 @@
 #!/bin/sh
 set -e
 
-echo "DATABASE_URL configurada?"
-echo ${DATABASE_URL:+SIM}
+echo "===== PRISMA START ====="
 
-echo "Aplicando schema..."
-npx prisma db push
+npx prisma migrate deploy
 
-echo "Iniciando aplicação..."
+echo "===== PRISMA OK ====="
+
 exec "$@"
