@@ -6,7 +6,7 @@
     "postinstall": "prisma generate --schema prisma/schema.prisma",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "prisma migrate deploy --schema prisma/schema.prisma && node dist/server.js",
+    "start": "npx prisma db push && node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:mail": "node scripts/test-smtp.mjs",
     "test:smtp": "npm run test:mail"
