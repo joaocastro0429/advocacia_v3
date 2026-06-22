@@ -1,10 +1,9 @@
 #!/bin/sh
 set -e
 
-echo "===== PRISMA START ====="
-
+echo "Applying database migrations..."
 npx prisma migrate deploy
+echo "Migrations applied successfully."
 
-echo "===== PRISMA OK ====="
-
+echo "Starting the application..."
 exec "$@"
