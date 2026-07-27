@@ -30,7 +30,7 @@ services:
       - "10000:10000"
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://advocacia:advocacia%40ad@db:5432/advocacia?schema=public
+      DATABASE_URL: postgresql://advocacia:advocacia%40ad@db:5432/db-advocacia?schema=public
       JWT_SECRET: dev-secret-change-in-production
       JWT_RESET_SECRET: dev-reset-secret-change-in-production
       PORT: 10000
