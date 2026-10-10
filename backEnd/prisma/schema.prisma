@@ -17,6 +17,8 @@ model User {
   password String
   role     String  @default("user")
   active   Boolean @default(true)
+  preferences Json @default("{}")
+  sessionVersion Int @default(0)
 
   // Perfil profissional
   oab       String?

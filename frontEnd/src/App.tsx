@@ -16,6 +16,7 @@ import NotFound from "./pages/NotFound";
 import Notifications from "./pages/Notifications";
 import Petitions from "./pages/Petitions"; // Updated import
 import Profile from "./pages/Profile";
+import ResetPassword from "./pages/ResetPassword";
 import Settings from "./pages/Settings";
 import Lawyers from "./pages/Lawyers"; 
 
@@ -40,6 +41,7 @@ const App = () => (
         }}>
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route element={
               <ProtectedRoute>
                 <DashboardLayout /> 

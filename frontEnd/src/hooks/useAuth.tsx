@@ -24,8 +24,8 @@ interface SignUpParams {
 
 interface ResetPasswordParams {
   email: string;
-  oabNumber: string;
-  newPassword: string;
+  oabNumber?: string;
+  newPassword?: string;
 }
 
 interface AuthContextType {
@@ -55,6 +55,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [idleMinutes,setIdleMinutes] = useState(30);
+  useEffect(()=>{if (!token) {setIdleMinutes(30);return;} let cancelled=false;
+    const load=()=>apiClient.get<{idleMinutes:number}>("/settings").then(s=>{if(!cancelled)setIdleMinutes(s.idleMinutes===15?15:30);}).catch(()=>{});
+    void load();window.addEventListener("preferences-saved",load);return()=>{cancelled=true;window.removeEventListener("preferences-saved",load);};
+  },[token]);
 
   // Verificar se existe token armazenado ao iniciar
   useEffect(() => {
@@ -148,8 +153,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await apiClient.post("/forgot-password", {
         email: params.email,
-        oabNumber: params.oabNumber,
-        newPassword: params.newPassword,
+
       });
       return { error: null };
     } catch (error) {
@@ -200,12 +204,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const resetIdleTimer = () => {
       clearTimeout(timeoutId);
       markActivity();
-      timeoutId = setTimeout(onIdle, IDLE_TIMEOUT_MS);
+      timeoutId = setTimeout(onIdle, idleMinutes * 60000);
     };
 
     const checkIdleState = () => {
       const inactiveFor = Date.now() - getLastActivity();
-      if (inactiveFor >= IDLE_TIMEOUT_MS) {
+      if (inactiveFor >= idleMinutes * 60000) {
         onIdle();
       }
     };
@@ -232,7 +236,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("visibilitychange", checkIdleState);
       window.removeEventListener("focus", checkIdleState);
     };
-  }, [token, user]);
+  }, [token, user, idleMinutes]);
 
   const isAuthenticated = !!token && !!user;
 
