@@ -124,7 +124,7 @@ export default function Login() {
           <div className="w-20 h-20 rounded-2xl bg-gradient-gold flex items-center justify-center mx-auto mb-8">
             <Scale className="w-12 h-12 text-primary" />
           </div>
-          <h1 className="font-serif text-4xl font-bold text-white mb-4">LexOffice</h1>
+          <h1 className="font-serif text-4xl font-bold text-white mb-4">PrevFluxo</h1>
           <p className="text-white/70 text-lg max-w-md">
             Sistema completo de gestão para escritórios de advocacia. 
             Organize seus processos, clientes e compromissos em um só lugar.
@@ -140,7 +140,7 @@ export default function Login() {
             <div className="w-16 h-16 rounded-xl bg-gradient-gold flex items-center justify-center mx-auto mb-4">
               <Scale className="w-10 h-10 text-primary" />
             </div>
-            <h1 className="font-serif text-2xl font-bold text-foreground">LexOffice</h1>
+            <h1 className="font-serif text-2xl font-bold text-foreground">PrevFluxo</h1>
           </div>
 
           <div className="bg-card p-8 rounded-xl shadow-card">

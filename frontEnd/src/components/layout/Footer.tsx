@@ -2,10 +2,10 @@ export function Footer() {
   return (
     <footer className="w-full bg-white border-t border-slate-100 py-6 mt-auto">
       <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-        
+
         {/* Lado Esquerdo: Copyright */}
         <div className="text-sm text-slate-500">
-          © {new Date().getFullYear()} <span className="font-bold text-slate-900 uppercase">LexOffice</span>. 
+          © {new Date().getFullYear()} <span className="font-bold text-slate-900 uppercase">PrevFluxo</span>.
           Todos os direitos reservados.
         </div>
 
