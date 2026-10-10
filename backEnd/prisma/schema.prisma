@@ -71,6 +71,7 @@ model Client {
   processes    Process[]
   petitions    Petition[]
 
+  intakes      Intake[]
   @@unique([cpf, userId])
   @@unique([cnpj, userId])
 }
@@ -190,6 +191,13 @@ model Intake {
   category String
   status String @default("triagem")
   notes String @default("") @db.Text
+  clientId String?
+  client Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  protocol String @default("")
+  benefitNumber String @default("")
+  requestedAt DateTime?
+  requirementDueAt DateTime?
+  lastActivityAt DateTime @default(now())
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   items IntakeItem[]
@@ -197,11 +205,14 @@ model Intake {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@index([userId, createdAt])
+  @@index([clientId])
 }
 model IntakeItem {
   id String @id @default(uuid())
   title String
   received Boolean @default(false)
+  fileId String?
+  file StoredFile? @relation(fields: [fileId], references: [id], onDelete: SetNull)
   intakeId String
   intake Intake @relation(fields: [intakeId], references: [id], onDelete: Cascade)
 }
@@ -221,5 +232,6 @@ model StoredFile {
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+  intakeItems IntakeItem[]
   @@index([userId])
 }

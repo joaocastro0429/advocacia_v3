@@ -545,7 +545,7 @@ export function usePetitions() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  const { data: petitions, isLoading } = useQuery<Petition[]>({
+  const { data: petitions, isLoading, error } = useQuery<Petition[]>({
     queryKey: ["petitions", user?.id],
     queryFn: async () => {
       const token = localStorage.getItem("auth_token");
@@ -661,6 +661,7 @@ export function usePetitions() {
   return {
     petitions,
     isLoading,
+    error,
     createPetition,
     updatePetition,
     deletePetition,

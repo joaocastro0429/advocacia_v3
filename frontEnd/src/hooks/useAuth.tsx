@@ -5,6 +5,8 @@ import { queryClient } from "@/App";
 interface User {
   id: string;
   email: string;
+  createdAt?: string;
+  created_at?: string;
   user_metadata?: {
     full_name?: string;
   };

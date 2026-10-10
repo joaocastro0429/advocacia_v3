@@ -24,8 +24,8 @@ export function RecentPetitions() {
   const { petitions, isLoading, error } = usePetitions();
 
   // Get the 5 most recent petitions by sorting
-  const recentPetitions: Petition[] = petitions
-    ?.sort((a, b) => new Date(b.updatedAt || b.createdAt).getTime() - new Date(a.updatedAt || a.createdAt).getTime())
+  const recentPetitions: Petition[] = [...(petitions || [])]
+    .sort((a, b) => new Date(b.updatedAt || b.created_at).getTime() - new Date(a.updatedAt || a.created_at).getTime())
     .slice(0, 5) || [];
 
   return (
@@ -89,7 +89,7 @@ export function RecentPetitions() {
                 </div>
                 <div className="text-right ml-4">
                   <p className="text-xs text-muted-foreground">
-                    {formatUpdateDate(petition.updatedAt || petition.createdAt)}
+                    {formatUpdateDate(petition.updatedAt || petition.created_at)}
                   </p>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Plus, Search, Pencil, Trash2, User, CalendarDays, Paperclip, Download } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -191,7 +191,7 @@ export default function Clients() {
             <TableBody>
               {filteredClients.map((client) => (
                 <TableRow key={client.id} className="hover:bg-slate-50/50 transition-colors">
-                  <TableCell className="font-semibold text-slate-900">{client.name}</TableCell>
+                  <TableCell className="font-semibold text-slate-900">{client.name}<Link className="block text-xs font-normal text-amber-700 hover:underline mt-1" to={`/atendimentos?clientId=${encodeURIComponent(client.id)}`}>Ver atendimentos</Link></TableCell>
                   <TableCell className="text-sm">
                     <div className="flex flex-col">
                       <span className="text-slate-600">{client.email || "Sem e-mail"}</span>
