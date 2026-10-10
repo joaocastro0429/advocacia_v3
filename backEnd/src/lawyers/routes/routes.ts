@@ -8,7 +8,7 @@ import { updateLawyerController } from '../controllers/update.controller.js';
 import { deleteLawyerController } from '../controllers/delete.controller.js';
 
 export const lawyerRoutes = Router();
-lawyerRoutes.use(authMiddleware, adminOnly)
+lawyerRoutes.use('/lawyer', authMiddleware, adminOnly)
 lawyerRoutes.get('/lawyer', Getcontroller)
 lawyerRoutes.get('/lawyer/:id', GetByIdController)
 
