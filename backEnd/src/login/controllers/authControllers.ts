@@ -8,6 +8,8 @@ const generic = 'Se o e-mail estiver cadastrado, você receberá um link para re
 export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
   const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
   if (!email || email.length > 254) { res.status(400).json({message:'Informe um e-mail válido.'}); return; }
+  const mailConfigured = process.env.MAIL_PROVIDER === 'resend' ? !!(process.env.RESEND_API_KEY && process.env.MAIL_FROM) : !!((process.env.EMAIL_USER || process.env.SMTP_USER || process.env.SMTP_EMAIL) && (process.env.EMAIL_APP_PASSWORD || process.env.SMTP_PASSWORD || process.env.SMTP_PASS));
+  if (!mailConfigured) {res.status(503).json({message:'A recuperação por e-mail está temporariamente indisponível. Entre em contato com o suporte: (62) 98245-4512.'});return;}
   try {
     const user = await prisma.user.findUnique({where:{email}});
     if (user?.active) {
