@@ -3,7 +3,7 @@ import { authMiddleware, AuthenticatedRequest } from '../login/middlewares/auth.
 import { prisma } from '../lib/prisma.js'
 
 export const intakeRoutes = Router()
-intakeRoutes.use(authMiddleware)
+intakeRoutes.use('/intakes', authMiddleware)
 const statuses = ['triagem', 'documentos', 'analise', 'concluido']
 intakeRoutes.get('/intakes', async (req: AuthenticatedRequest, res) => {
   res.json(await prisma.intake.findMany({ where: { userId: req.user!.userId }, include: { items: true, tasks: true }, orderBy: { createdAt: 'desc' } }))
