@@ -86,7 +86,7 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           {!collapsed && (
             <div className="animate-fade-in">
               <h1 className="font-serif text-lg font-semibold text-sidebar-foreground leading-tight">
-                LexOffice
+                PrevFluxo
               </h1>
               <p className="text-xs text-sidebar-foreground/60">
                 Gestão Jurídica

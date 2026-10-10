@@ -1,26 +1,34 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Scale } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { trackFunnel } from "@/lib/funnel";
 
 export default function Login() {
-  const [isLogin, setIsLogin] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isLogin = searchParams.get("modo") !== "cadastro";
+  const setIsLogin = (value: boolean) => setSearchParams(value ? {} : { modo: "cadastro" });
   const [isRecovering, setIsRecovering] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [oabNumber, setOabNumber] = useState("");
-  const [specialty, setSpecialty] = useState("");
+  const [signupStarted, setSignupStarted] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { signIn, signUp, resetPassword } = useAuth() as any;
+  const { signIn, signUp, resetPassword } = useAuth();
+
+  useEffect(() => {
+    if (!isLogin) trackFunnel("signup_view");
+    setSignupStarted(false);
+  }, [isLogin]);
 
   useEffect(() => {
     const expiredReason = localStorage.getItem("session_expired_reason");
@@ -49,7 +57,6 @@ export default function Login() {
     setPassword("");
     setName("");
     setOabNumber("");
-    setSpecialty("");
     setNewPassword("");
     setConfirmNewPassword("");
   };
@@ -98,10 +105,9 @@ export default function Login() {
           password,
           name,
           oabNumber,
-          specialty,
         });
         if (error) throw error;
-        toast({ title: "Conta criada!", description: "Você já pode acessar o sistema." });
+        toast({ title: "Conta criada!", description: "Comece cadastrando seu primeiro cliente." });
         clearForm();
         navigate("/");
       }
@@ -124,10 +130,10 @@ export default function Login() {
           <div className="w-20 h-20 rounded-2xl bg-gradient-gold flex items-center justify-center mx-auto mb-8">
             <Scale className="w-12 h-12 text-primary" />
           </div>
-          <h1 className="font-serif text-4xl font-bold text-white mb-4">LexOffice</h1>
+          <h1 className="font-serif text-4xl font-bold text-white mb-4">PrevFluxo</h1>
           <p className="text-white/70 text-lg max-w-md">
-            Sistema completo de gestão para escritórios de advocacia. 
-            Organize seus processos, clientes e compromissos em um só lugar.
+            Seu escritório organizado. Sua rotina mais clara.
+            Reúna clientes, processos, petições e compromissos em um só lugar.
           </p>
         </div>
       </div>
@@ -135,12 +141,13 @@ export default function Login() {
       {/* Right side - Form */}
       <div className="flex-1 flex items-center justify-center p-8 bg-background">
         <div className="w-full max-w-md">
+          <Link to="/" className="mb-6 inline-block text-sm text-slate-600 hover:underline">← Conhecer o PrevFluxo</Link>
           {/* Mobile logo */}
           <div className="lg:hidden mb-8 text-center">
             <div className="w-16 h-16 rounded-xl bg-gradient-gold flex items-center justify-center mx-auto mb-4">
               <Scale className="w-10 h-10 text-primary" />
             </div>
-            <h1 className="font-serif text-2xl font-bold text-foreground">LexOffice</h1>
+            <h1 className="font-serif text-2xl font-bold text-foreground">PrevFluxo</h1>
           </div>
 
           <div className="bg-card p-8 rounded-xl shadow-card">
@@ -152,10 +159,15 @@ export default function Login() {
                 ? "Informe e-mail, OAB e a nova senha para redefinir seu acesso"
                 : isLogin
                   ? "Acesse sua conta para continuar"
-                  : "Preencha os dados para criar sua conta"}
+                  : "Comece com os dados essenciais. Complete seu perfil depois."}
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} onChange={() => {
+              if (!isLogin && !isRecovering && !signupStarted) {
+                trackFunnel("signup_start");
+                setSignupStarted(true);
+              }
+            }} className="space-y-4">
               {!isLogin && !isRecovering && (
                 <>
                   <div className="space-y-2">
@@ -163,6 +175,7 @@ export default function Login() {
                     <Input
                       id="name"
                       type="text"
+                      autoComplete="name"
                       placeholder="Dr. João Silva"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
@@ -177,17 +190,6 @@ export default function Login() {
                       placeholder="123456"
                       value={oabNumber}
                       onChange={(e) => setOabNumber(e.target.value)}
-                      required={!isLogin}
-                    />
-                  </div>
-                   <div className="space-y-2">
-                    <Label htmlFor="specialty">Especialidade</Label>
-                    <Input
-                      id="specialty"
-                      type="text"
-                      placeholder="Direito Civil"
-                      value={specialty}
-                      onChange={(e) => setSpecialty(e.target.value)}
                       required={!isLogin}
                     />
                   </div>
@@ -246,7 +248,7 @@ export default function Login() {
                       minLength={8}
                     />
                     <p className="text-xs text-muted-foreground">
-                      Use 8+ caracteres com maiúscula, minúscula, número e símbolo (ex.: <code>Lgbtqia+2026</code>).
+                      Use pelo menos 8 caracteres com maiúscula, minúscula, número e símbolo.
                     </p>
                   </div>
                 </>
@@ -278,7 +280,7 @@ export default function Login() {
                   />
                   {!isLogin && (
                     <p className="text-xs text-muted-foreground">
-                      Use 8+ caracteres com maiúscula, minúscula, número e símbolo (ex.: <code>Lgbtqia+2026</code>).
+                      Use pelo menos 8 caracteres com maiúscula, minúscula, número e símbolo.
                     </p>
                   )}
                 </div>

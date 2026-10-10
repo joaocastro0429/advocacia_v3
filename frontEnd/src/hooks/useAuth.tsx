@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 import { apiClient } from "@/lib/api-client";
 import { queryClient } from "@/App";
+import { trackFunnel } from "@/lib/funnel";
 
 interface User {
   id: string;
@@ -17,7 +18,7 @@ interface SignUpParams {
   password: string;
   name: string;
   oabNumber: string;
-  specialty: string;
+  specialty?: string;
 }
 
 interface ResetPasswordParams {
@@ -131,7 +132,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         oabNumber: params.oabNumber,
         specialty: params.specialty,
       });
-      
+      trackFunnel("signup_complete");
 
       // Após registrar, fazer login automaticamente
       const loginResult = await signIn(normalizedEmail, params.password);

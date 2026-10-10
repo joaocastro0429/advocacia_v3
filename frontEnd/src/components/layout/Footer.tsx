@@ -5,7 +5,7 @@ export function Footer() {
         
         {/* Lado Esquerdo: Copyright */}
         <div className="text-sm text-slate-500">
-          © {new Date().getFullYear()} <span className="font-bold text-slate-900 uppercase">LexOffice</span>. 
+          © {new Date().getFullYear()} <span className="font-bold text-slate-900 uppercase">PrevFluxo</span>.
           Todos os direitos reservados.
         </div>
 

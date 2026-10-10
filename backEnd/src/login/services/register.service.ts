@@ -7,7 +7,7 @@ interface RegisterProps {
   password: string
   name: string
   oabNumber: string
-  specialty: string
+  specialty?: string
 }
 
 export const Register = async ({
@@ -49,7 +49,7 @@ export const Register = async ({
       name,
       role: "lawyer",
       oab: oabNumber,
-      specialty,
+      specialty: specialty?.trim() || null,
     },
   })
 

@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { trackActivation } from "@/lib/funnel";
 
 export interface Client {
   id: string;
@@ -43,6 +44,7 @@ export function useClients() {
       return response;
     },
     onSuccess: () => {
+      trackActivation(user?.id, "client_created");
       queryClient.invalidateQueries({ queryKey: ["clients", user?.id] });
       toast({ title: "Cliente criado com sucesso!" });
     },
