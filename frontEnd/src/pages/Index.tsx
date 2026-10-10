@@ -11,12 +11,13 @@ import { useCases } from "@/hooks/useCases";
 import { useClients } from "@/hooks/useClients";
 import { usePetitions } from "@/hooks/usePetitions";
 import { Footer } from "@/components/layout/Footer";
+import { GettingStarted } from "@/components/dashboard/GettingStarted";
 
 const Index = () => {
   const { user } = useAuth();
   const { profileData } = useUserProfile();
   const { cases } = useCases();
-  const { clients } = useClients();
+  const { clients, isLoading: clientsLoading, error: clientsError } = useClients();
   const { petitions } = usePetitions();
 
   // Garante a leitura do nome em diferentes estruturas de usuário e evita erro de tipagem
@@ -115,6 +116,8 @@ const Index = () => {
         </div>
         <QuickActions />
       </div>
+
+      {!clientsLoading && !clientsError && clients.length === 0 && <GettingStarted />}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

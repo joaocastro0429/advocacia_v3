@@ -5,8 +5,8 @@ export const RegisterController: RequestHandler = async (req, res) => {
   try {
     const { email, password, name, oabNumber, specialty } = req.body
 
-    if (!email || !password || !name || !oabNumber || !specialty) {
-      return res.status(400).json({ message: "All fields are required." })
+    if (!email || !password || !name || !oabNumber) {
+      return res.status(400).json({ message: "Nome, OAB, e-mail e senha são obrigatórios." })
     }
 
     const result = await Register({

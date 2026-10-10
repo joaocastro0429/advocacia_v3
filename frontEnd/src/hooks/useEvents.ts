@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { trackActivation } from "@/lib/funnel";
 
 export interface Event {
   id: string;
@@ -47,6 +48,7 @@ export function useEvents() {
       return response;
     },
     onSuccess: () => {
+      trackActivation(user?.id, "event_created");
       queryClient.invalidateQueries({ queryKey: ["events", user?.id] });
       toast({ title: "Compromisso criado com sucesso!" });
     },
