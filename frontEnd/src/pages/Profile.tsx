@@ -1,3 +1,5 @@
+import {useNavigate} from "react-router-dom";
+import {apiClient} from "@/lib/api-client";
 import { useState, useEffect } from "react";
 import { 
   User, Shield, Briefcase, Lock, MapPin, 
@@ -22,7 +24,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useUserProfile } from "@/hooks/useUserProfile";
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user,signOut } = useAuth();
+  const navigate=useNavigate();
+  const [passwordBusy,setPasswordBusy]=useState(false);
   const { toast } = useToast();
   const { profileData, isLoading, error, updateProfile } = useUserProfile();
 
@@ -117,27 +121,19 @@ export default function Profile() {
     }
   };
 
-  const handleUpdatePassword = () => {
-    if (passwords.new !== passwords.confirm) {
-      toast({ variant: "destructive", title: "Erro na senha", description: "A nova senha e a confirmação não coincidem." });
-      return;
-    }
-    toast({ title: "Senha atualizada!", className: "bg-green-600 text-white" });
-    setIsPassModalOpen(false);
-    setPasswords({ current: "", new: "", confirm: "" });
+  const handleUpdatePassword = async () => {
+    if(passwordBusy)return;
+    if(passwords.new!==passwords.confirm){toast({title:"As senhas não conferem",variant:"destructive"});return;}
+    setPasswordBusy(true);
+    try{await apiClient.post('/settings/password',{currentPassword:passwords.current,newPassword:passwords.new});await signOut();toast({title:"Senha atualizada",description:"Entre novamente com sua nova senha."});navigate('/login');}
+    catch(e){toast({title:"Não foi possível alterar a senha",description:(e as Error).message,variant:"destructive"});}
+    finally{setPasswordBusy(false);}
   };
-
-  const handleForgotPassword = () => {
-    toast({
-      title: "E-mail enviado",
-      description: (
-        <div className="flex items-center gap-2">
-          <Mail className="w-4 h-4 text-primary" />
-          <span>Instruções enviadas para {profile.email}</span>
-        </div>
-      ),
-    });
-    setIsPassModalOpen(false);
+  const handleForgotPassword = async () => {
+    if(passwordBusy)return;setPasswordBusy(true);
+    try{await apiClient.post('/forgot-password',{email:profile.email});toast({title:"Confira seu e-mail",description:"Se o e-mail estiver cadastrado, você receberá um link de recuperação."});setIsPassModalOpen(false);}
+    catch(e){toast({title:"Recuperação indisponível",description:(e as Error).message,variant:"destructive"});}
+    finally{setPasswordBusy(false);}
   };
 
   // Exibir erro se houver
@@ -291,7 +287,7 @@ export default function Profile() {
                 </div>
                 <DialogFooter>
                   <Button variant="ghost" onClick={() => setIsPassModalOpen(false)}>Cancelar</Button>
-                  <Button onClick={handleUpdatePassword} className="bg-[#1e293b] text-[#fbbf24]">Atualizar Senha</Button>
+                  <Button disabled={passwordBusy} onClick={handleUpdatePassword} className="bg-[#1e293b] text-[#fbbf24]">Atualizar Senha</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
