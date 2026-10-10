@@ -1,3 +1,4 @@
+import Intakes from './pages/Intakes';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +16,7 @@ import NotFound from "./pages/NotFound";
 import Notifications from "./pages/Notifications";
 import Petitions from "./pages/Petitions"; // Updated import
 import Profile from "./pages/Profile";
+import ResetPassword from "./pages/ResetPassword";
 import Settings from "./pages/Settings";
 import Lawyers from "./pages/Lawyers"; 
 
@@ -39,12 +41,14 @@ const App = () => (
         }}>
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route element={
               <ProtectedRoute>
                 <DashboardLayout /> 
               </ProtectedRoute>
             }>
               <Route path="/" element={<Index />} />
+              <Route path="/atendimentos" element={<Intakes />} />
               <Route path="/clientes" element={<Clients />} />
               <Route path="/processos" element={<Cases />} />
               <Route path="/agenda" element={<Agenda />} />

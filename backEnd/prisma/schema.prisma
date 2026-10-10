@@ -17,6 +17,8 @@ model User {
   password String
   role     String  @default("user")
   active   Boolean @default(true)
+  preferences Json @default("{}")
+  sessionVersion Int @default(0)
 
   // Perfil profissional
   oab       String?
@@ -29,6 +31,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  intakes      Intake[]
+  storedFiles  StoredFile[]
   clients      Client[]
   processes    Process[]
   appointments Appointment[]
@@ -69,6 +73,7 @@ model Client {
   processes    Process[]
   petitions    Petition[]
 
+  intakes      Intake[]
   @@unique([cpf, userId])
   @@unique([cnpj, userId])
 }
@@ -180,4 +185,55 @@ enum PetitionType {
   APPEAL
   MANIFESTATION
   OTHER
+}
+
+model Intake {
+  id String @id @default(uuid())
+  title String
+  category String
+  status String @default("triagem")
+  notes String @default("") @db.Text
+  clientId String?
+  client Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  protocol String @default("")
+  benefitNumber String @default("")
+  requestedAt DateTime?
+  requirementDueAt DateTime?
+  lastActivityAt DateTime @default(now())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items IntakeItem[]
+  tasks IntakeTask[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([userId, createdAt])
+  @@index([clientId])
+}
+model IntakeItem {
+  id String @id @default(uuid())
+  title String
+  received Boolean @default(false)
+  fileId String?
+  file StoredFile? @relation(fields: [fileId], references: [id], onDelete: SetNull)
+  intakeId String
+  intake Intake @relation(fields: [intakeId], references: [id], onDelete: Cascade)
+}
+model IntakeTask {
+  id String @id @default(uuid())
+  title String
+  dueDate DateTime?
+  done Boolean @default(false)
+  intakeId String
+  intake Intake @relation(fields: [intakeId], references: [id], onDelete: Cascade)
+}
+model StoredFile {
+  id String @id @default(uuid())
+  name String
+  mime String
+  content Bytes
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  intakeItems IntakeItem[]
+  @@index([userId])
 }

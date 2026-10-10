@@ -1,141 +1,42 @@
 import { Request, Response } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import { randomBytes, createHash } from 'node:crypto';
 import bcrypt from 'bcrypt';
-import {prisma} from '../../lib/prisma.js';
+import { prisma } from '../../lib/prisma.js';
 import { sendResetPasswordEmail } from '../../lib/mailer.js';
-
-let warnedResetSecretFallback = false;
-
-const getResetSecret = (): string | null => {
-  const resetSecret = (process.env.JWT_RESET_SECRET || '').trim();
-  if (resetSecret) return resetSecret;
-
-  const jwtSecret = (process.env.JWT_SECRET || '').trim();
-  if (jwtSecret) {
-    if (!warnedResetSecretFallback) {
-      console.warn('JWT_RESET_SECRET não configurado. Usando JWT_SECRET como fallback.');
-      warnedResetSecretFallback = true;
-    }
-    return jwtSecret;
-  }
-
-  return null;
-};
-
-// POST /auth/forgot-password
+const digest = (token: string) => createHash('sha256').update(token).digest('hex');
+const generic = 'Se o e-mail estiver cadastrado, você receberá um link para redefinir a senha.';
 export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+  const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+  if (!email || email.length > 254) { res.status(400).json({message:'Informe um e-mail válido.'}); return; }
+  const mailConfigured = process.env.MAIL_PROVIDER === 'resend' ? !!(process.env.RESEND_API_KEY && process.env.MAIL_FROM) : !!((process.env.EMAIL_USER || process.env.SMTP_USER || process.env.SMTP_EMAIL) && (process.env.EMAIL_APP_PASSWORD || process.env.SMTP_PASSWORD || process.env.SMTP_PASS));
+  if (!mailConfigured) {res.status(503).json({message:'A recuperação por e-mail está temporariamente indisponível. Entre em contato com o suporte: (62) 98245-4512.'});return;}
   try {
-    const { email } = req.body as { email: string };
-
-    const user = await prisma.user.findUnique({ where: { email } });
-
-    // Não revela se o email existe ou não (segurança)
-    if (!user) {
-      res.status(200).json({ message: 'Se o email existir, você receberá as instruções.' });
-      return;
-    }
-
-    const resetSecret = getResetSecret();
-    if (!resetSecret) {
-      console.error('forgotPassword error: JWT_RESET_SECRET/JWT_SECRET não configurado.');
-      res.status(200).json({ message: 'Se o email existir, você receberá as instruções.' });
-      return;
-    }
-
-    const token = jwt.sign(
-      { userId: user.id },
-      resetSecret,
-      { expiresIn: '1h' }
-    );
-
-    const frontendUrl = (
-      process.env.FRONTEND_URL ||
-      process.env.CORS_ORIGIN ||
-      'http://localhost:5173'
-    ).trim();
-    const debugEnabled =
-      process.env.PASSWORD_RESET_DEBUG_RESPONSE === 'true' &&
-      process.env.NODE_ENV !== 'production';
-    const debugResetLink =
-      frontendUrl
-        ? `${frontendUrl}/reset-password` +
-          `?token=${encodeURIComponent(token)}` +
-          `&email=${encodeURIComponent(email)}`
-        : null;
-
-    // Em desenvolvimento, permite testar o fluxo sem depender do SMTP.
-    if (debugEnabled && debugResetLink) {
-      console.warn('forgotPassword debug mode: SMTP bypassed, returning reset link.');
-      res.status(200).json({
-        message: 'Se o email existir, você receberá as instruções.',
-        debugResetLink,
-      });
-      return;
-    }
-
-    try {
-      await sendResetPasswordEmail(email, token);
-    } catch (mailError) {
-      // Não expõe falha de infraestrutura para o cliente e evita quebra do fluxo.
-      console.error('forgotPassword mail error:', mailError);
-
-      // Fallback para desenvolvimento local quando SMTP estiver indisponível.
-      if (debugResetLink) {
-        console.warn('forgotPassword dev fallback reset link:', debugResetLink);
-
-        if (debugEnabled) {
-          res.status(200).json({
-            message: 'Se o email existir, você receberá as instruções.',
-            debugResetLink,
-          });
-          return;
-        }
+    const user = await prisma.user.findUnique({where:{email}});
+    if (user?.active) {
+      const recent = await prisma.passwordResetToken.count({where:{userId:user.id,createdAt:{gte:new Date(Date.now()-15*60000)}}});
+      if (recent < 3) {
+        const token = randomBytes(32).toString('hex');
+        await prisma.passwordResetToken.create({data:{userId:user.id,token:digest(token),expiresAt:new Date(Date.now()+3600000)}});
+        try { await sendResetPasswordEmail(email,token); }
+        catch { console.error('Falha no envio do e-mail de recuperação. Verifique o provedor de e-mail.'); }
       }
     }
-
-    res.status(200).json({ message: 'Se o email existir, você receberá as instruções.' });
-  } catch (error) {
-    console.error('forgotPassword error:', error);
-    res.status(500).json({ message: 'Erro interno no servidor.' });
-  }
+    res.setHeader('Cache-Control','no-store');res.json({message:generic});
+  } catch { res.status(503).json({message:'Não foi possível solicitar a recuperação. Tente novamente mais tarde.'}); }
 };
-
-// POST /auth/reset-password
 export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+  const {token,newPassword}=req.body;
+  if (typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token) || typeof newPassword !== 'string' || newPassword.length<8 || Buffer.byteLength(newPassword)>72 || !/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword) || !/[^A-Za-z0-9]/.test(newPassword)) {res.status(400).json({message:'Link ou senha inválidos. Use 8 caracteres ou mais, com maiúscula, minúscula, número e símbolo (até 72 bytes).'});return;}
   try {
-    const { token, newPassword } = req.body as { token: string; newPassword: string };
-
-    if (!token || !newPassword) {
-      res.status(400).json({ message: 'Token e nova senha são obrigatórios.' });
-      return;
-    }
-
-    const resetSecret = getResetSecret();
-    if (!resetSecret) {
-      res.status(500).json({ message: 'Configuração de segurança ausente no servidor.' });
-      return;
-    }
-
-    const decoded = jwt.verify(token, resetSecret) as JwtPayload;
-
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    await prisma.user.update({
-      where: { id: decoded.userId },
-      data: { password: hashedPassword },
+    const record=await prisma.passwordResetToken.findUnique({where:{token:digest(token)},include:{user:{select:{active:true}}}});
+    if (!record || !record.user.active || record.expiresAt<=new Date()) {res.status(400).json({message:'Link inválido, expirado ou já utilizado. Solicite outro.'});return;}
+    const password=await bcrypt.hash(newPassword,10);
+    await prisma.$transaction(async tx=>{
+      const claimed=await tx.passwordResetToken.updateMany({where:{id:record.id,expiresAt:{gt:new Date()}},data:{expiresAt:new Date()}});
+      if (!claimed.count) throw new Error('Link utilizado');
+      await tx.user.update({where:{id:record.userId},data:{password,sessionVersion:{increment:1}}});
+      await tx.passwordResetToken.updateMany({where:{userId:record.userId},data:{expiresAt:new Date()}});
     });
-
-    res.status(200).json({ message: 'Senha redefinida com sucesso!' });
-  } catch (error) {
-    if (error instanceof jwt.TokenExpiredError) {
-      res.status(401).json({ message: 'Token expirado. Solicite um novo link.' });
-      return;
-    }
-    if (error instanceof jwt.JsonWebTokenError) {
-      res.status(401).json({ message: 'Token inválido.' });
-      return;
-    }
-    console.error('resetPassword error:', error);
-    res.status(500).json({ message: 'Erro interno no servidor.' });
-  }
+    res.setHeader('Cache-Control','no-store');res.json({message:'Senha redefinida. Entre novamente.'});
+  } catch {res.status(400).json({message:'Não foi possível redefinir. Solicite outro link.'});}
 };

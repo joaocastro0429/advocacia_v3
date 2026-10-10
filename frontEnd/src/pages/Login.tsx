@@ -20,7 +20,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { signIn, signUp, resetPassword } = useAuth() as any;
+  const { signIn, signUp, resetPassword } = useAuth();
 
   useEffect(() => {
     const expiredReason = localStorage.getItem("session_expired_reason");
@@ -60,25 +60,9 @@ export default function Login() {
 
     try {
       if (isRecovering) {
-        if (resetPassword) {
-          const passwordError = validateStrongPassword(newPassword);
-          if (passwordError) {
-            throw new Error(passwordError);
-          }
-          if (newPassword !== confirmNewPassword) {
-            throw new Error("A confirmação da nova senha não confere.");
-          }
-
-          const { error } = await resetPassword({
-            email,
-            oabNumber,
-            newPassword,
-          });
-          if (error) throw error;
-        } else {
-          throw new Error("Fluxo de recuperação indisponível.");
-        }
-        toast({ title: "Senha redefinida!", description: "Faça login com sua nova senha." });
+        const {error} = await resetPassword({email});
+        if(error) throw error;
+        toast({title:"Confira seu e-mail",description:"Se o e-mail estiver cadastrado, você receberá um link para redefinir a senha."});
         setIsRecovering(false);
         clearForm();
       } else if (isLogin) {
@@ -124,7 +108,7 @@ export default function Login() {
           <div className="w-20 h-20 rounded-2xl bg-gradient-gold flex items-center justify-center mx-auto mb-8">
             <Scale className="w-12 h-12 text-primary" />
           </div>
-          <h1 className="font-serif text-4xl font-bold text-white mb-4">LexOffice</h1>
+          <h1 className="font-serif text-4xl font-bold text-white mb-4">PrevFluxo</h1>
           <p className="text-white/70 text-lg max-w-md">
             Sistema completo de gestão para escritórios de advocacia. 
             Organize seus processos, clientes e compromissos em um só lugar.
@@ -140,7 +124,7 @@ export default function Login() {
             <div className="w-16 h-16 rounded-xl bg-gradient-gold flex items-center justify-center mx-auto mb-4">
               <Scale className="w-10 h-10 text-primary" />
             </div>
-            <h1 className="font-serif text-2xl font-bold text-foreground">LexOffice</h1>
+            <h1 className="font-serif text-2xl font-bold text-foreground">PrevFluxo</h1>
           </div>
 
           <div className="bg-card p-8 rounded-xl shadow-card">
@@ -149,7 +133,7 @@ export default function Login() {
             </h2>
             <p className="text-muted-foreground mb-6">
               {isRecovering
-                ? "Informe e-mail, OAB e a nova senha para redefinir seu acesso"
+                ? "Informe seu e-mail para receber um link de recuperação"
                 : isLogin
                   ? "Acesse sua conta para continuar"
                   : "Preencha os dados para criar sua conta"}
@@ -207,51 +191,6 @@ export default function Login() {
                 />
               </div>
 
-              {isRecovering && (
-                <>
-                  <div className="space-y-2">
-                    <Label htmlFor="recover-oab">Nº da OAB</Label>
-                    <Input
-                      id="recover-oab"
-                      type="text"
-                      placeholder="123456"
-                      value={oabNumber}
-                      onChange={(e) => setOabNumber(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="new-password">Nova senha</Label>
-                    <Input
-                      id="new-password"
-                      type="password"
-                      autoComplete="new-password"
-                      placeholder="••••••••"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      required
-                      minLength={8}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm-new-password">Confirmar nova senha</Label>
-                    <Input
-                      id="confirm-new-password"
-                      type="password"
-                      autoComplete="new-password"
-                      placeholder="••••••••"
-                      value={confirmNewPassword}
-                      onChange={(e) => setConfirmNewPassword(e.target.value)}
-                      required
-                      minLength={8}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Use 8+ caracteres com maiúscula, minúscula, número e símbolo (ex.: <code>Lgbtqia+2026</code>).
-                    </p>
-                  </div>
-                </>
-              )}
-
               {!isRecovering && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
@@ -285,7 +224,7 @@ export default function Login() {
               )}
 
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Carregando..." : isRecovering ? "Redefinir senha" : isLogin ? "Entrar" : "Criar conta"}
+                {loading ? "Carregando..." : isRecovering ? "Enviar link de recuperação" : isLogin ? "Entrar" : "Criar conta"}
               </Button>
             </form>
 

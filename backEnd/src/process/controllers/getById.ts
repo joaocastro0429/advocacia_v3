@@ -5,7 +5,7 @@ export const GetProcessById: RequestHandler = async (req, res) => {
   try {
     const id = req.params.id
 
-    const process = await GetById(id) // 🔥 chama a função
+    const process = await GetById(String(id)) // 🔥 chama a função
 
     res.status(200).json(process)
 

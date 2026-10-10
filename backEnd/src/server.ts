@@ -1,8 +1,10 @@
+import { settingsRoutes } from './settings/routes.js'
+import { intakeRoutes } from './intakes/routes.js'
 import 'dotenv/config'
 import express, { Request, Response, NextFunction } from 'express'
 import cors from 'cors'
 import path from 'path'
-import fs from 'fs'
+
 import { fileURLToPath } from 'url'
 import swaggerUi from 'swagger-ui-express'
 import swaggerSpec from './swagger.js'
@@ -76,14 +78,6 @@ server.use(express.json())
 
 // ================= Uploads =================
 
-const uploadsPath = path.resolve(__dirname, '..', 'uploads')
-
-if (!fs.existsSync(uploadsPath)) {
-  fs.mkdirSync(uploadsPath, { recursive: true })
-}
-
-server.use('/uploads', express.static(uploadsPath))
-
 // ================= api Check =================
 
 server.get('/api', (req: Request, res: Response) => {
@@ -96,6 +90,8 @@ server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 // ================= Routes =================
 
+server.use('/api', settingsRoutes)
+server.use('/api', intakeRoutes)
 server.use('/api', clientRoutes)
 server.use('/api', ProcessRouter)
 server.use('/api', lawyerRoutes)
@@ -127,6 +123,8 @@ server.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 const PORT = Number(process.env.PORT) || 3333
 
-server.listen(PORT, '0.0.0.0', () => {
+export default server
+
+if (!process.env.VERCEL) server.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`)
 })

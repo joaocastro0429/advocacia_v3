@@ -1,0 +1,11 @@
+import {useState} from 'react';
+import {Link,useSearchParams} from 'react-router-dom';
+import {apiClient} from '@/lib/api-client';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+export default function ResetPassword(){
+ const [params]=useSearchParams();const token=params.get('token')||'';
+ const [password,setPassword]=useState('');const [confirm,setConfirm]=useState('');const [busy,setBusy]=useState(false);const [error,setError]=useState('');const [done,setDone]=useState(false);
+ return <main className="min-h-screen bg-slate-100 flex items-center justify-center p-4"><section className="w-full max-w-md rounded-xl bg-white border p-6 shadow-sm space-y-5"><h1 className="font-serif text-2xl text-slate-900">Redefinir senha · PrevFluxo</h1>{done?<p role="status">Senha redefinida. Suas sessões anteriores foram encerradas.</p>:!token?<p role="alert">Link inválido. Solicite uma nova recuperação na tela de login.</p>:<form className="space-y-4" onSubmit={async e=>{e.preventDefault();setError('');if(password!==confirm){setError('As senhas não conferem.');return;}setBusy(true);try{await apiClient.post('/reset-password',{token,newPassword:password});localStorage.removeItem('auth_token');localStorage.removeItem('auth_user');setDone(true);}catch(e){setError((e as Error).message);}finally{setBusy(false);}}}><p className="text-sm text-slate-600">Use ao menos 8 caracteres, com maiúscula, minúscula, número e símbolo. O link expira em uma hora e pode ser usado uma vez.</p><Label htmlFor="reset-new">Nova senha</Label><Input id="reset-new" type="password" autoComplete="new-password" minLength={8} required value={password} onChange={e=>setPassword(e.target.value)}/><Label htmlFor="reset-confirm">Confirme a nova senha</Label><Input id="reset-confirm" type="password" autoComplete="new-password" minLength={8} required value={confirm} onChange={e=>setConfirm(e.target.value)}/>{error&&<p role="alert" className="text-sm text-red-700">{error}</p>}<Button type="submit" disabled={busy} className="w-full bg-slate-800 text-amber-300">{busy?'Salvando…':'Redefinir senha'}</Button></form>}<Link className="block text-sm underline text-slate-700" to="/login">Voltar para entrar</Link></section></main>;
+}

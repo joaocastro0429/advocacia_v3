@@ -28,11 +28,11 @@ function getPrisma(): PrismaClient {
   const connectionString = getConnectionString()
   if (!connectionString) {
     throw new Error(
-      "DATABASE_URL nao configurada. Configure a env var DATABASE_URL (ex: no Render -> Environment)."
+      "DATABASE_URL nao configurada. Configure a env var DATABASE_URL (ex: na Vercel → Environment Variables)."
     )
   }
 
-  const adapter = new PrismaPg({ connectionString })
+  const adapter = new PrismaPg({ connectionString, max: 3, idleTimeoutMillis: 10000, connectionTimeoutMillis: 10000 })
   prismaInstance = new PrismaClient({ adapter })
   return prismaInstance
 }

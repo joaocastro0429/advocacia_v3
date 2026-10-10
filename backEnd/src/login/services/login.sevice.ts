@@ -51,7 +51,7 @@ export const LoginService = async (data: LoginData) => {
     where: { email: normalizedEmail },
   })
 
-  if (!user) {
+  if (!user || !user.active) {
     const failedCount = registerFailedAttempt(normalizedEmail)
     throw new Error(getInvalidCredentialsMessage(failedCount))
   }
@@ -66,7 +66,7 @@ export const LoginService = async (data: LoginData) => {
   clearFailedAttempts(normalizedEmail)
 
   const token = jwt.sign(
-    { userId: user.id },
+    { userId: user.id, sessionVersion: user.sessionVersion },
     process.env.JWT_SECRET as string,
     { expiresIn: '1d' }
   )

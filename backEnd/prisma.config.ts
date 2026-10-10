@@ -14,7 +14,7 @@ export default defineConfig({
     // available during build for Blueprint-provisioned databases.
     // We use a placeholder URL for build-time, and the real DATABASE_URL at runtime.
     url:
-      process.env.DATABASE_URL ||
+      process.env.DIRECT_URL || process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL ||
       "postgresql://user:pass@127.0.0.1:1/db?schema=public",
   },
 });

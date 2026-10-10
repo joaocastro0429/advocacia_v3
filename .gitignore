@@ -15,3 +15,5 @@ frontEnd/dist
 # Dados do Docker
 data/
 postgres_data/
+.tmp/
+backEnd/dist/

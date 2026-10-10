@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
+  ClipboardList,
   LayoutDashboard,
   Users,
   Briefcase,
@@ -18,6 +19,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Atendimentos", url: "/atendimentos", icon: ClipboardList },
   { title: "Clientes", url: "/clientes", icon: Users },
   // { title: "Advogados", url: "/advogados", icon: Gavel }, 
   { title: "Processos", url: "/processos", icon: Briefcase },
@@ -65,13 +67,14 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     >
       {/* Botão de Recolher no Topo (Direita) */}
       <div className="flex justify-end px-4 pt-4">
-        <button onClick={() => setIsOpen?.(false)} className="md:hidden p-1.5 text-sidebar-foreground/60 hover:text-sidebar-foreground">
+        <button aria-label="Fechar menu" onClick={() => setIsOpen?.(false)} className="md:hidden p-1.5 text-sidebar-foreground/80 hover:text-sidebar-foreground">
           <X className="w-5 h-5" />
         </button>
 
         <button
+          aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
           onClick={() => setCollapsed(!collapsed)}
-          className="hidden md:block p-1.5 rounded-lg text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+          className="hidden md:block p-1.5 rounded-lg text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
         >
           {collapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
         </button>
@@ -86,10 +89,10 @@ export function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           {!collapsed && (
             <div className="animate-fade-in">
               <h1 className="font-serif text-lg font-semibold text-sidebar-foreground leading-tight">
-                LexOffice
+                PrevFluxo
               </h1>
-              <p className="text-xs text-sidebar-foreground/60">
-                Gestão Jurídica
+              <p className="text-xs text-sidebar-foreground/80">
+                Gestão Previdenciária
               </p>
             </div>
           )}
