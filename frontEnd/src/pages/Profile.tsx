@@ -73,7 +73,7 @@ export default function Profile() {
         full_name: meta.full_name || meta.name || "",
         email: user.email || "",
         username: user.email?.split('@')[0] || "",
-        created_at: new Date(user.created_at).toLocaleDateString('pt-BR'),
+        created_at: (user.createdAt || user.created_at) ? new Date(user.createdAt || user.created_at).toLocaleDateString('pt-BR') : '',
         oab: meta.oab || "",
         oab_uf: meta.oab_uf || "",
         cpf: meta.cpf || "",

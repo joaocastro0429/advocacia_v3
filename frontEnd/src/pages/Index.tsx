@@ -1,3 +1,4 @@
+import { IntakeOverview } from '@/components/intakes/IntakeOverview';
 import { useMemo } from "react";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { RecentCases } from "@/components/dashboard/RecentCases";
@@ -29,7 +30,7 @@ const Index = () => {
     "Usuário";
 
   const stats = useMemo(() => {
-    const processosAtivos = (cases || []).length;
+    const processosAtivos = (cases || []).filter(item => item.status !== 'concluido').length;
     const totalClientes = (clients || []).length;
     const totalPeticoes = (petitions || []).length;
 
@@ -107,7 +108,7 @@ const Index = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-serif font-bold text-slate-900">
-            Bom dia, Dr. {userName}
+            Bem-vindo, Dr. {userName}
           </h1>
           <p className="text-muted-foreground mt-1">
             Aqui está o resumo do seu escritório hoje
@@ -115,6 +116,8 @@ const Index = () => {
         </div>
         <QuickActions />
       </div>
+
+      <IntakeOverview />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
