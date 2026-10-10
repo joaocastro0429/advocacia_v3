@@ -1,3 +1,4 @@
+import { settingsRoutes } from './settings/routes.js'
 import { intakeRoutes } from './intakes/routes.js'
 import 'dotenv/config'
 import express, { Request, Response, NextFunction } from 'express'
@@ -89,6 +90,7 @@ server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 // ================= Routes =================
 
+server.use('/api', settingsRoutes)
 server.use('/api', intakeRoutes)
 server.use('/api', clientRoutes)
 server.use('/api', ProcessRouter)

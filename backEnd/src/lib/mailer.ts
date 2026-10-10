@@ -32,6 +32,7 @@ const transporter = nodemailer.createTransport({
   port: smtpPort,
   secure: smtpSecure,
   auth: { user: smtpUser, pass: smtpPass },
+  connectionTimeout: 10000, greetingTimeout: 10000, socketTimeout: 15000,
 });
 
 function normalizeSmtpError(error: unknown): Error {
@@ -131,8 +132,7 @@ export const sendResetPasswordEmail = async (
 
   const resetLink =
     `${frontendUrl}/reset-password` +
-    `?token=${encodeURIComponent(resetToken)}` +
-    `&email=${encodeURIComponent(toEmail)}`;
+    `?token=${encodeURIComponent(resetToken)}`;
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto;">
@@ -156,6 +156,7 @@ export const sendResetPasswordEmail = async (
 
       const response = await fetch(resendApiUrl, {
         method: 'POST',
+        signal: AbortSignal.timeout(15000),
         headers: {
           Authorization: `Bearer ${resendApiKey}`,
           'Content-Type': 'application/json',
