@@ -1,3 +1,4 @@
+import { ownsRecord } from '../../security/ownership.js'
 import {createPetitionController} from '../controllers/create.controller.js'
 import {getPetitionsController} from '../controllers/get.controller.js' // Updated import
 import {GetPetitionByIdController} from '../controllers/getById.controller.js' // Updated import
@@ -12,4 +13,4 @@ petitionRoutes.post('/petitions', authMiddleware, createPetitionController) // U
 petitionRoutes.get('/petitions', authMiddleware, getPetitionsController) // Updated path and router name
 petitionRoutes.get('/petitions/:id', authMiddleware, GetPetitionByIdController) // Updated path and router name
 petitionRoutes.put('/petitions/:id', authMiddleware, updatePetitionController) // Updated path and router name
-petitionRoutes.delete('/petitions/:id', authMiddleware, deletePetitionController) // Updated path and router name
+petitionRoutes.delete('/petitions/:id', authMiddleware, ownsRecord('petition'), deletePetitionController) // Updated path and router name

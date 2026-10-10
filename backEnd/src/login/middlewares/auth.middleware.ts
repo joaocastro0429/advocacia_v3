@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+import { prisma } from '../../lib/prisma.js'
 
 dotenv.config()
 
@@ -8,7 +9,7 @@ export interface AuthenticatedRequest extends Request {
   user?: { id?: string; userId?: string; role?: string }
 }
 
-export const authMiddleware = (
+export const authMiddleware = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
@@ -28,10 +29,14 @@ export const authMiddleware = (
       role?: string
     }
 
+    const userId = decoded.id ?? decoded.userId
+    if (!userId) return res.status(401).json({ message: 'Invalid authentication token' })
+    const account = await prisma.user.findUnique({ where: { id: userId }, select: { active: true, role: true } })
+    if (!account?.active) return res.status(401).json({ message: 'Conta indisponível' })
     req.user = {
       id: decoded.id ?? decoded.userId,
       userId: decoded.userId ?? decoded.id,
-      role: decoded.role,
+      role: account.role,
     }
 
     next()

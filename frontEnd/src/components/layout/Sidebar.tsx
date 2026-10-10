@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
+  ClipboardList,
   LayoutDashboard,
   Users,
   Briefcase,
@@ -18,6 +19,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Atendimentos", url: "/atendimentos", icon: ClipboardList },
   { title: "Clientes", url: "/clientes", icon: Users },
   // { title: "Advogados", url: "/advogados", icon: Gavel }, 
   { title: "Processos", url: "/processos", icon: Briefcase },

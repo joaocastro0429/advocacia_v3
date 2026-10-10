@@ -1,44 +1,16 @@
-
-import { Request, Response } from 'express';
-import path from 'path';
-
-export const UploadController = (req: Request, res: Response) => {
-  console.log('📥 Dados da requisição:', {
-    body: req.body,
-    file: req.file ? {
-      fieldname: req.file.fieldname,
-      originalname: req.file.originalname,
-      encoding: req.file.encoding,
-      mimetype: req.file.mimetype,
-      size: req.file.size,
-      destination: req.file.destination,
-      filename: req.file.filename,
-      path: req.file.path,
-    } : null
-  });
-
-  if (!req.file) {
-    console.log('❌ Nenhum arquivo foi enviado');
-    return res.status(400).json({ 
-      success: false,
-      message: 'Nenhum arquivo foi enviado.' 
-    });
-  }
-
-  const fileInfo = {
-    success: true,
-    message: 'Arquivo enviado com sucesso.',
-    file: {
-      originalName: req.file.originalname,
-      savedName: req.file.filename,
-      mimeType: req.file.mimetype,
-      size: req.file.size,
-      path: `/uploads/${req.file.filename}`, // Caminho relativo para download
-      downloadPath: `/uploads/${req.file.filename}`,
-      fullPath: req.file.path, // Caminho completo no servidor
-    }
-  };
-
-  console.log('✅ Arquivo salvo com sucesso:', fileInfo);
-  return res.status(200).json(fileInfo);
-};
+import { Response, NextFunction } from 'express'
+import { AuthenticatedRequest } from '../../login/middlewares/auth.middleware.js'
+import { prisma } from '../../lib/prisma.js'
+export async function UploadController(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  try {
+    const file = req.file
+    if (!file) return res.status(400).json({ message: 'Envie um arquivo PDF, PNG ou JPEG de até 3 MB.' })
+    const bytes = file.buffer
+    const mime = bytes.subarray(0, 5).toString() === '%PDF-' ? 'application/pdf'
+      : bytes.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])) ? 'image/png'
+      : bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255 ? 'image/jpeg' : null
+    if (!mime) return res.status(400).json({ message: 'Formato de arquivo não permitido.' })
+    const stored = await prisma.storedFile.create({ data: { name: file.originalname.slice(0, 200), mime, content: new Uint8Array(bytes), userId: req.user!.userId! } })
+    return res.json({ success: true, file: { originalName: stored.name, size: file.size, mimeType: mime, path: `/files/${stored.id}` } })
+  } catch (error) { next(error) }
+}

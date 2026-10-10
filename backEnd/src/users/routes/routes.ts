@@ -1,3 +1,4 @@
+import { adminOnly } from '../../security/ownership.js'
 import { RequestHandler, Router } from 'express';
 import { createUserController } from '../controllers/create.controller.js';
 import { getUsersController } from '../controllers/get.controller.js';
@@ -11,7 +12,7 @@ const userRoutes = Router();
 userRoutes.post('/users', createUserController);
 
 // Rotas protegidas por autenticação
-userRoutes.get('/users', authMiddleware, getUsersController);
+userRoutes.get('/users', authMiddleware, adminOnly, getUsersController);
 userRoutes.get('/users/:id', authMiddleware, getUserByIdController);
 userRoutes.put('/users/:id', authMiddleware, updateUserController);
 

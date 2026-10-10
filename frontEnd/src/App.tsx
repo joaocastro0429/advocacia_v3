@@ -1,3 +1,4 @@
+import Intakes from './pages/Intakes';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -45,6 +46,7 @@ const App = () => (
               </ProtectedRoute>
             }>
               <Route path="/" element={<Index />} />
+              <Route path="/atendimentos" element={<Intakes />} />
               <Route path="/clientes" element={<Clients />} />
               <Route path="/processos" element={<Cases />} />
               <Route path="/agenda" element={<Agenda />} />

@@ -1,11 +1,2 @@
-import multer from 'multer';
-
-const storage = multer.diskStorage({
-  destination: 'uploads/', // salva direto na pasta
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + '-' + file.originalname;
-    cb(null, uniqueName);
-  }
-});
-
-export const upload = multer({ storage });
+import multer from 'multer'
+export const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 3 * 1024 * 1024, files: 1 } })
