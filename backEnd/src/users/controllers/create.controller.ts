@@ -2,8 +2,6 @@ import { Request, Response } from 'express';
 import { createUserService } from '../services/create.service.js';
 
 export const createUserController = async (req: Request, res: Response) => {
-    console.log('📨 Requisição recebida para criar usuário:', { body: req.body });
-    
     const { name, email, password } = req.body;
 
     // Validação básica
